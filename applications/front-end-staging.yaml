@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sql-service-qa
+  name: front-end-staging
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/amokscience/argo-apps
     targetRevision: main
-    path: argocd-apps/sql-service/overlays/qa
+    path: front-end/overlays/staging
   destination:
     server: https://kubernetes.default.svc
-    namespace: qa
+    namespace: staging
   syncPolicy:
     automated:
       prune: true

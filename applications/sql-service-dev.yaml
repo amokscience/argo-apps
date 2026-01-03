@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: front-end-dev
+  name: sql-service-dev
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/amokscience/argo-apps
     targetRevision: main
-    path: argocd-apps/front-end/overlays/dev
+    path: sql-service/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
