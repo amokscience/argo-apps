@@ -8,6 +8,17 @@ namePrefix: dev-
 
 namespace: dev
 
+patchesJson6902:
+- target:
+    group: v1
+    version: v1
+    kind: Service
+    name: hello
+  patch: |-
+    - op: replace
+      path: /spec/ports/0/port
+      value: 8050
+
 configMapGenerator:
 - name: hello-config
   literals:
