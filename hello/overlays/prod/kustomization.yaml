@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ../../base
+
+namePrefix: prod-
+
+namespace: prod
+
+configMapGenerator:
+- name: hello-config
+  literals:
+  - environment=prod
+  - hello=Hello from Kubernetes!

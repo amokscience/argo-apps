@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-qa
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amokscience/argo-apps
+    targetRevision: main
+    path: hello/overlays/qa
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: qa
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
