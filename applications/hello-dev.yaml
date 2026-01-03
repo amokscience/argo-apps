@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/amokscience/argo-apps
-    targetRevision: main
-    path: hello/overlays/dev
+    repoURL: https://github.com/amokscience/hello
+    targetRevision: dev
+    path: kustomize/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: dev

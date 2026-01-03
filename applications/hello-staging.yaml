@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/amokscience/argo-apps
-    targetRevision: main
-    path: hello/overlays/staging
+    repoURL: https://github.com/amokscience/hello
+    targetRevision: staging
+    path: kustomize/overlays/staging
   destination:
     server: https://kubernetes.default.svc
     namespace: staging
