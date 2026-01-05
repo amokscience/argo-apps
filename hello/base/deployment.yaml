@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: hello
 spec:
+  revisionHistoryLimit: 3
   replicas: 3
   selector:
     matchLabels:
@@ -34,7 +35,6 @@ spec:
           valueFrom:
             secretKeyRef:
               name: app-secrets
-              namespace: external-secrets
               key: aws-credentials
         resources:
           requests:
