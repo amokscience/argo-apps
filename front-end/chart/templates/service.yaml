@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "front-end.fullname" . }}
+spec:
+  selector:
+    app: {{ include "front-end.name" . }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.port }}
+    protocol: TCP
+    name: http
+  type: ClusterIP
