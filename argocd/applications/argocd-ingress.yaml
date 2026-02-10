@@ -5,16 +5,8 @@ metadata:
   namespace: argocd
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"      # ← CRITICAL
-    nginx.ingress.kubernetes.io/ssl-passthrough: "false"         # ← CRITICAL
-    nginx.ingress.kubernetes.io/proxy-redirect-from: "https://$host"  # ← ADD
-    nginx.ingress.kubernetes.io/proxy-redirect-to: "http://$host"     # ← ADD
 spec:
   ingressClassName: nginx
-  tls:
-  - hosts:
-    - argocd.local
-    secretName: argocd-tls
   rules:
   - host: argocd.local
     http:
