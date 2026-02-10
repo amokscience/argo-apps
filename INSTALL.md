@@ -15,8 +15,30 @@ helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-
 # Apply root-app, which manages ArgoCD and all child applications via the app of apps pattern
 kubectl apply -f c:\code\argo-apps\argocd\root-app.yaml
 
+# ============================================================================
+# TESTING COMMANDS - Run these to verify everything is working
+# ============================================================================
+# Check NGINX Ingress Controller
+kubectl get pods -n nginx-ingress
+kubectl get svc -n nginx-ingress
 
+# Check ArgoCD deployment
+kubectl get pods -n argocd
+kubectl get application -n argocd
 
+# Check Ingress
+kubectl get ingress -n argocd
+kubectl describe ingress argocd-server -n argocd
+
+# View ArgoCD logs
+kubectl logs -n argocd deployment/argocd-server --tail=20
+kubectl logs -n argocd deployment/argocd-application-controller --tail=20
+
+# Get admin password
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+# List ArgoCD applications
+kubectl get applications -n argocd
 
 
 
