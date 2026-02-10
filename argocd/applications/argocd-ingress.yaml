@@ -5,11 +5,11 @@ metadata:
   namespace: argocd
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
-  - host: argocd.local
-    http:
+  - http:
       paths:
       - path: /
         pathType: Prefix
