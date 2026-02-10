@@ -8,6 +8,8 @@ kubectl create namespace argocd
 
 # 2. Create secrets
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=8GZB5E2TGQeJdOOcSFRQz9KdY2BVGxwn -n argocd
+kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n argocd
+
 kubectl create secret generic argocd-keycloak-ca --from-file=ca.crt="C:\code\keycloak\keycloak-root-ca.pem" -n argocd
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
 

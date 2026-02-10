@@ -11,7 +11,7 @@ data:
     name: Keycloak
     issuer: https://keycloak.local:8443/realms/master
     clientID: argocd
-    clientSecret: 8GZB5E2TGQeJdOOcSFRQz9KdY2BVGxwn
+    clientSecret: $argocd-oidc-keycloak:client-secret
     logoutURL: https://keycloak.local:8443/realms/master/protocol/openid-connect/logout?client_id=argocd&post_logout_redirect_uri=https://argocd.local
     requestedScopes: ["openid","profile","email","groups"]
     rootCA: |
