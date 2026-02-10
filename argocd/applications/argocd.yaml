@@ -21,15 +21,6 @@ spec:
         configs:
           params:
             server.insecure: true
-          
-          cm: {}
-          
-          # OIDC/Keycloak SSO - Configure after ArgoCD is stable
-          # rbac:
-          #   scopes: '[groups, email]'
-        
-        controller:
-          replicas: 1
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
