@@ -7,13 +7,15 @@ kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\arg
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# Install NGINX Ingress Controller
+# Install NGINX Ingress Controller (ensure no other NGINX controllers exist)
 helm repo add nginx-stable https://helm.nginx.com/stable
 helm repo update
 helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-namespace
 
-# Apply ArgoCD Ingress (manual)
+# Apply ArgoCD Ingress
 kubectl apply -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
+
+kubectl get ingress --all-namespaces -o wide
 
 # ============================================================================
 # GET CREDENTIALS & ACCESS
