@@ -11,14 +11,7 @@ data:
     issuer: https://keycloak.local:8443/realms/master
     clientID: argocd
     clientSecret: 8GZB5E2TGQeJdOOcSFRQz9KdY2BVGxwn
-    requestedScopes:
-      - openid
-      - profile
-      - email
-      - groups
-    requestedIDTokenClaims:
-      groups:
-        essential: true
+    requestedScopes: ["openid","profile","email","groups"]
     rootCA: |
       -----BEGIN CERTIFICATE-----
       MIIE1zCCAz+gAwIBAgIQeWldHIl5n69GtEWvEaSK+jANBgkqhkiG9w0BAQsFADCB
