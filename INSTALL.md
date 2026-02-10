@@ -1,30 +1,43 @@
+# ============================================================================
+# ArgoCD Bootstrap Script - Complete Installation
+# ============================================================================
+# Run this entire script to bootstrap ArgoCD with Keycloak OIDC integration
+
+# 1. Create namespace
 kubectl create namespace argocd
 
+# 2. Create secrets
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=8GZB5E2TGQeJdOOcSFRQz9KdY2BVGxwn -n argocd
 kubectl create secret generic argocd-keycloak-ca --from-file=ca.crt="C:\code\keycloak\keycloak-root-ca.pem" -n argocd
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
 
+# 3. Install ArgoCD bootstrap manifests
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# Install NGINX Ingress Controller (ensure no other NGINX controllers exist)
+# 4. Install NGINX Ingress Controller
 helm repo add nginx-stable https://helm.nginx.com/stable
 helm repo update
 helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-namespace
 
-# Apply ArgoCD Ingress
-kubectl apply -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
+# 5. Apply ArgoCD manifests from this repo
+kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
 
-kubectl get ingress --all-namespaces -o wide
+# 6. Restart ArgoCD server to apply all configurations
+kubectl rollout restart deployment/argocd-server -n argocd
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # ============================================================================
-# GET CREDENTIALS & ACCESS
+# ACCESS INSTRUCTIONS
 # ============================================================================
+# 1. Add to hosts file: 127.0.0.1 argocd.local
+# 2. Access: http://argocd.local
+# 3. Login with Keycloak SSO or use admin credentials:
+
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-
-# Access: http://argocd.local
-# Add to hosts file: 127.0.0.1 argocd.local
-# Login: admin / <password from command above>
+echo "^-- Copy admin password above"
+echo "ArgoCD URL: http://argocd.local"
 
 
 
