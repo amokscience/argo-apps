@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: argo-cd
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 7.7.12  # Pin to specific version, update as needed
+    helm:
+      releaseName: argocd
+      values: |
+        server:
+          extraArgs:
+            - --insecure
+        
+        configs:
+          params:
+            server.insecure: true
+          
+          cm:
+            oidc.config: |
+              name: Keycloak
+              issuer: https://keycloak.local:8443/realms/master
+              clientID: argocd
+              clientSecret: $argocd-oidc-keycloak:client-secret
+              requestedScopes:
+                - openid
+                - profile
+                - email
+                - groups
+              requestedIDTokenClaims:
+                groups:
+                  essential: true
+          
+          rbac:
+            scopes: '[groups, email]'
+        
+        controller:
+          replicas: 1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
