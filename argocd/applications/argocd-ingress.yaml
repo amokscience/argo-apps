@@ -4,7 +4,7 @@ metadata:
   name: argocd-server
   namespace: argocd
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/proxy-set-headers: "argocd/argocd-proxy-headers"
@@ -20,7 +20,7 @@ spec:
           service:
             name: argocd-server
             port:
-              number: 80
+              number: 443
 ---
 apiVersion: v1
 kind: ConfigMap
