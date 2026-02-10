@@ -16,11 +16,13 @@ helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-
 kubectl apply -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
 
 # ============================================================================
-# GET CREDENTIALS
+# GET CREDENTIALS & ACCESS
 # ============================================================================
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
-# Access: https://argocd.local (add to hosts file: 127.0.0.1 argocd.local)
+# Access: http://argocd.local
+# Add to hosts file: 127.0.0.1 argocd.local
+# Login: admin / <password from command above>
 
 
 
