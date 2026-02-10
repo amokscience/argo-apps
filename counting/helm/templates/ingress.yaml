@@ -12,6 +12,12 @@ metadata:
 spec:
   {{- if .Values.ingress.className }}
   ingressClassName: {{ .Values.ingress.className }}
+    tls:
+    - secretName: counting-local-tls
+      hosts:
+        {{- range .Values.ingress.hosts }}
+        - {{ .host }}
+        {{- end }}
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
