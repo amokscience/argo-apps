@@ -22,23 +22,11 @@ spec:
           params:
             server.insecure: true
           
-          cm:
-            oidc.config: |
-              name: Keycloak
-              issuer: https://keycloak.local:8443/realms/master
-              clientID: argocd
-              clientSecret: $argocd-oidc-keycloak:client-secret
-              requestedScopes:
-                - openid
-                - profile
-                - email
-                - groups
-              requestedIDTokenClaims:
-                groups:
-                  essential: true
+          cm: {}
           
-          rbac:
-            scopes: '[groups, email]'
+          # OIDC/Keycloak SSO - Configure after ArgoCD is stable
+          # rbac:
+          #   scopes: '[groups, email]'
         
         controller:
           replicas: 1
