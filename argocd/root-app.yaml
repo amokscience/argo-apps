@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/amokscience/argocd-apps
+    repoURL: https://github.com/amokscience/argo-apps
     targetRevision: main
     path: argocd/applications
     directory:
