@@ -7,14 +7,13 @@ kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\arg
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# Install NGINX Gateway Fabric (prerequisite for Gateway API)
-# Note: If this fails or seems complex, switch to traditional Ingress in applications/argocd-ingress.yaml
+# Install NGINX Ingress Controller (required for argocd-ingress.yaml to work)
 helm repo add nginx-stable https://helm.nginx.com/stable
 helm repo update
-helm install nginx-gateway nginx-stable/nginx-gateway -n nginx-gateway --create-namespace
+helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-namespace
 
 # Apply root-app, which manages ArgoCD and all child applications via the app of apps pattern
-#kubectl apply -f c:\code\argo-apps\argocd\root-app.yaml
+kubectl apply -f c:\code\argo-apps\argocd\root-app.yaml
 
 
 
