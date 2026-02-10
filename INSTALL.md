@@ -21,8 +21,8 @@ helm repo update
 helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-namespace
 
 # 5. Apply ArgoCD manifests from this repo
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
+kubectl apply --server-side -f .\argocd\applications\argocd-ingress.yaml
+kubectl apply --server-side -f .\argocd\applications\argocd-keycloak-oidc.yaml
 
 # 6. Restart ArgoCD server to apply all configurations
 kubectl rollout restart deployment/argocd-server -n argocd
@@ -39,10 +39,8 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 echo "^-- Copy admin password above"
 echo "ArgoCD URL: http://argocd.local"
 
-
-
 kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.local+1.pem --key=c:\certs\_wildcard.counting.local+1-key.pem -n dev
-
+kubectl apply --server-side -f .\argocd\applications\counting\counting-dev-app.yaml
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 $ArgoPassword = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d 
