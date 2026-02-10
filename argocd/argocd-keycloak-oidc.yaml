@@ -1,0 +1,45 @@
+---
+# ArgoCD OIDC Configuration for Keycloak
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  oidc.config: |
+    name: Keycloak
+    issuer: https://keycloak.local:8443/realms/master
+    clientID: argocd
+    clientSecret: 8GZB5E2TGQeJdOOcSFRQz9KdY2BVGxwn
+    requestedScopes:
+      - openid
+      - profile
+      - email
+      - groups
+    requestedIDTokenClaims:
+      groups:
+        essential: true
+---
+# ArgoCD RBAC Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+data:
+  scopes: '[groups, email]'
+  policy.default: 'role:viewer'
+  policy.csv: |
+    # Grant admin role to argocd-admins group from Keycloak
+    g, argocd-admins, role:admin
+    # Grant read-only to argocd-viewers group
+    g, argocd-viewers, role:viewer
+---
+# Ensure server.insecure is set
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+  namespace: argocd
+data:
+  server.insecure: 'true'
