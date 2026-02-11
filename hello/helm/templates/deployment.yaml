@@ -31,7 +31,7 @@ spec:
         - name: CONFIG
           valueFrom:
             secretKeyRef:
-              name: hello-dev-config-secret
+              name: {{ .Values.externalSecrets.secretName }}
               key: config
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
