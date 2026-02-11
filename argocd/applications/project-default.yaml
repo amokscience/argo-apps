@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: default
-  namespace: argocd  # Replace with your Argo CD namespace
+  namespace: argocd
 spec:
   description: Default Argo CD project
   sourceRepos:
@@ -10,33 +10,9 @@ spec:
   destinations:
   - namespace: '*'
     server: '*'
-  namespaceResourceWhitelist:  # Use whitelist (allow list) instead of blacklist
-  - group: ''
-    kind: ConfigMap
-  - group: rbac.authorization.k8s.io
-    kind: Role
-  - group: rbac.authorization.k8s.io
-    kind: RoleBinding
-  - group: ''
-    kind: ServiceAccount
-  - group: ''
-    kind: Secret
-  - group: apps
-    kind: Deployment
-  - group: apps
-    kind: StatefulSet
-  - group: ''
-    kind: Service
-  - group: external-secrets.io
-    kind: SecretStore
-  - group: external-secrets.io
-    kind: ExternalSecret
-  - group: networking.k8s.io
-    kind: Ingress    
-  - group: argoproj.io
-    kind: Application
-  - group: argoproj.io
-    kind: AppProject
   clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  namespaceResourceWhitelist:
   - group: '*'
     kind: '*'
