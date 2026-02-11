@@ -19,13 +19,16 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
-  # ADD THIS BLOCK:
+    - RespectIgnoreDifferences=true
   ignoreDifferences:
   - group: apiextensions.k8s.io
     kind: CustomResourceDefinition
     jsonPointers:
     - /status
-  # ADD syncOption:
-  syncOptions:
-  - CreateNamespace=true
-  - RespectIgnoreDifferences=true  # Ensures ignores apply during sync
+  - group: ""
+    kind: Service
+    name: nginx-ingress-controller
+    namespace: nginx-ingress
+    jsonPointers:
+    - /spec/ports/0/nodePort
+    - /spec/ports/1/nodePort
