@@ -1,49 +1,72 @@
 # ============================================================================
-# ArgoCD Bootstrap Script - Complete Installation
+# ArgoCD Bootstrap Script - App-of-Apps Pattern with Keycloak OIDC
 # ============================================================================
-# Run this entire script to bootstrap ArgoCD with Keycloak OIDC integration
+# Minimal bootstrap: Create secrets, then deploy root application
+# All infrastructure (NGINX, counting app, keycloak OIDC) auto-deploys via ArgoCD
 
-# 1. Create namespace
+# 1. Create namespaces
 kubectl create namespace argocd
+kubectl create namespace dev
 
-# 2. Create secrets
+# 2. Create required secrets (manual prerequisite)
+# ============================================================================
+# These must exist before root app is deployed
+
+# ArgoCD OIDC secret
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=RyTihUdhH8ahTO6MIHJCkQ7DmolHlM3c -n argocd
 kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n argocd
+
+# ArgoCD TLS cert
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
 
-# 3. Install ArgoCD bootstrap manifests
+# Counting app TLS cert (wildcard for *.counting.local)
+kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.local+1.pem --key=c:\certs\_wildcard.counting.local+1-key.pem -n dev
+
+# 3. Install ArgoCD bootstrap manifests (stable release)
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# 4. Install NGINX Ingress Controller
-helm repo add nginx-stable https://helm.nginx.com/stable
-helm repo update
-helm install nginx-ingress nginx-stable/nginx-ingress -n nginx-ingress --create-namespace
+# 4. Create ArgoCD ingress and OIDC config
+kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
 
-# 5. Apply ArgoCD manifests from this repo
-kubectl apply --server-side -f .\argocd\applications\argocd-ingress.yaml
-kubectl apply --server-side -f .\argocd\applications\argocd-keycloak-oidc.yaml
-
-# 6. Restart ArgoCD server to apply all configurations
+# 5. Restart ArgoCD server
 kubectl rollout restart deployment/argocd-server -n argocd
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+
+# 6. Register repo with ArgoCD
+argocd repo add https://github.com/amokscience/argo-apps --insecure-skip-server-verification
+
+# 7. Deploy root application (scaffolds everything else)
+# ============================================================================
+# This single Application creates all child apps:
+#   - nginx-ingress (NGINX Ingress Controller)
+#   - argocd-keycloak-oidc (ArgoCD OIDC ConfigMaps)
+#   - counting-dev (Counting application with ingress)
+kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
+kubectl wait --for=condition=available --timeout=300s application/root -n argocd
+
+# ============================================================================
+# VERIFICATION
+# ============================================================================
+# Verify all apps are synced:
+kubectl get applications -n argocd
+argocd app list
 
 # ============================================================================
 # ACCESS INSTRUCTIONS
 # ============================================================================
-# 1. Add to hosts file: 127.0.0.1 argocd.local
-# 2. Access: http://argocd.local
-# 3. Login with Keycloak SSO or use admin credentials:
+# 1. Add to hosts file (C:\Windows\System32\drivers\etc\hosts): 
+#    127.0.0.1 argocd.local
+#    127.0.0.1 dev.counting.local
+#
+# 2. Access ArgoCD: https://argocd.local
+# 3. Access Counting App: https://dev.counting.local
+#
+# 4. Get ArgoCD admin password:
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+echo ""
 echo "^-- Copy admin password above"
-echo "ArgoCD URL: http://argocd.local"
-
-kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.local+1.pem --key=c:\certs\_wildcard.counting.local+1-key.pem -n dev
-kubectl apply --server-side -f .\argocd\applications\counting\counting-dev-app.yaml
-
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-$ArgoPassword = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d 
-setx ARGOCD_PASSWORD $ArgoPassword /M
-$ArgoPassword 
-$ArgoPassword | clip
+echo "ArgoCD URL: https://argocd.local"
+echo "Counting App URL: https://dev.counting.local"
