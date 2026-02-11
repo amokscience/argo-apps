@@ -15,9 +15,10 @@ spec:
     kind: ConfigMap
   - group: rbac.authorization.k8s.io
     kind: Role
+  - group: rbac.authorization.k8s.io
+    kind: RoleBinding
   - group: ''
     kind: ServiceAccount
-  # Add other common resources Argo CD typically needs:
   - group: ''
     kind: Secret
   - group: apps
