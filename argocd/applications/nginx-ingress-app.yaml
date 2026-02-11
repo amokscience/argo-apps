@@ -1,3 +1,10 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-ingress
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -19,3 +26,16 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+    - /status
+  - group: ""
+    kind: Service
+    name: nginx-ingress-controller
+    namespace: nginx-ingress
+    jsonPointers:
+    - /spec/ports/0/nodePort
+    - /spec/ports/1/nodePort
