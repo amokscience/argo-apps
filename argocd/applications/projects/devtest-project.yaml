@@ -10,19 +10,35 @@ spec:
   sourceRepos:
   - 'https://github.com/amokscience/*'
   
-  # Cluster destinations
+  # Cluster destinations (keep restrictive)
   destinations:
   - namespace: 'dev'
-    server: https://kubernetes.default.svc
+    server: 'https://kubernetes.default.svc'
   - namespace: 'default'
-    server: https://kubernetes.default.svc
+    server: 'https://kubernetes.default.svc'
   
   # Cluster resources access
   clusterResourceWhitelist:
   - group: '*'
     kind: '*'
   
-  # Namespace resources access
+  # Namespace resources access - ADD WHITELIST + KEEP BLACKLIST
+  namespaceResourceWhitelist:
+  - group: ''
+    kind: Pod
+  - group: apps
+    kind: ReplicaSet
+  - group: apps
+    kind: Deployment
+  - group: ''
+    kind: Service
+  - group: ''
+    kind: Endpoints
+  - group: discovery
+    kind: EndpointSlice
+  - group: networking.k8s.io
+    kind: Ingress
+  
   namespaceResourceBlacklist:
   - group: ''
     kind: Namespace
