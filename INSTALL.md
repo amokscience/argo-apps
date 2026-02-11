@@ -19,8 +19,6 @@ kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n ar
 
 # ArgoCD TLS cert
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
-
-# app TLS certs
 kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.local+1.pem --key=c:\certs\_wildcard.counting.local+1-key.pem -n dev
 kubectl create secret tls cfb-local-tls --cert=c:\certs\_wildcard.cfb.local+1.pem --key=c:\certs\_wildcard.cfb.local+1-key.pem -n dev
 kubectl create secret tls hello-local-tls --cert=c:\certs\_wildcard.hello.local+1.pem --key=c:\certs\_wildcard.hello.local+1-key.pem -n dev
@@ -43,7 +41,7 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 # ============================================================================
 # This must deploy before root app, since CFB and Hello use ESO to fetch secrets from AWS
 kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\external-secrets-operator-app.yaml
-kubectl wait --for=condition=available --timeout=300s deployment/external-secrets-webhook -n external-secrets
+kubectl wait --for=condition=available --timeout=300s deployment/external-secrets-operator-webhook -n external-secrets
 
 # 7. Deploy root application (scaffolds user applications and projects)
 # ============================================================================
