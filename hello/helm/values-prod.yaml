@@ -1,6 +1,4 @@
 # Production environment values
-namespace: prod
-
 replicaCount: 2
 image:
   repository: amokscience/hello
@@ -28,11 +26,3 @@ serviceAccount:
 
 autoscaling:
   enabled: false
-
-externalSecrets:
-  enabled: true
-  awsRegion: us-west-2
-  secretName: hello-prod-secrets
-  awsSecrets:
-    secretName: eso-secret-hello
-  serviceAccountName: hello

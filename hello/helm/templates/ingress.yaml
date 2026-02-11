@@ -7,10 +7,6 @@ metadata:
     {{- include "hello.labels" . | nindent 4 }}
 spec:
   ingressClassName: nginx
-  tls:
-  - secretName: hello-local-tls
-    hosts:
-    - {{ .Values.ingress.host }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:

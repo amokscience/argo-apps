@@ -31,7 +31,7 @@ spec:
         - name: CONFIG
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.externalSecrets.secretName }}
+              name: {{ include "hello.fullname" . }}-secrets
               key: config
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
