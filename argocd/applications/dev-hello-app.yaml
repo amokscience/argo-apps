@@ -4,7 +4,7 @@ metadata:
   name: hello-dev
   namespace: argocd
 spec:
-  project: default
+  project: devtest
   source:
     repoURL: https://github.com/amokscience/argo-apps
     targetRevision: main
