@@ -32,6 +32,7 @@ spec:
     kind: CustomResourceDefinition
     jsonPointers:
     - /status
+    - /spec/preserveUnknownFields
   - group: ""
     kind: Service
     name: nginx-ingress-controller
