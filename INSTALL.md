@@ -34,6 +34,9 @@ kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keyc
 kubectl rollout restart deployment/argocd-server -n argocd
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
+$ArgocdPassword = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+argocd login argocd.local --plaintext --insecure --username admin --password $ArgocdPassword
+
 # 6. Register repo with ArgoCD
 argocd repo add https://github.com/amokscience/argo-apps --insecure-skip-server-verification
 
@@ -56,10 +59,7 @@ argocd app list
 # ============================================================================
 # ACCESS INSTRUCTIONS
 # ============================================================================
-# 1. Add to hosts file (C:\Windows\System32\drivers\etc\hosts): 
-#    127.0.0.1 argocd.local
-#    127.0.0.1 dev.counting.local
-#
+
 # 2. Access ArgoCD: https://argocd.local
 # 3. Access Counting App: https://dev.counting.local
 #
