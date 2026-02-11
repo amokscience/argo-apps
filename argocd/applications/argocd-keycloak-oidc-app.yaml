@@ -7,10 +7,11 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://github.com/amokscience/argo-apps
+  sources:
+  - repoURL: https://github.com/amokscience/argo-apps
     targetRevision: main
     path: argocd/applications
+    include: argocd-keycloak-oidc.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
