@@ -20,3 +20,25 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+  # GLOBAL IGNORES - applies to ALL child apps
+  ignoreDifferences:
+  # Ignore nodePort drift (nginx-ingress, LoadBalancer services)
+  - group: ""
+    kind: Service
+    jsonPointers:
+    - /spec/ports/*/nodePort
+  # Ignore Ingress status (loadBalancer, conditions)
+  - group: networking.k8s.io
+    kind: Ingress
+    jsonPointers:
+    - /status
+  # Ignore Deployment status/replicas drift
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /status
+  # Ignore Secret data rotation
+  - group: ""
+    kind: Secret
+    jsonPointers:
+    - /data
