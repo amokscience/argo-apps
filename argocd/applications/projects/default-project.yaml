@@ -27,6 +27,12 @@ spec:
     kind: StatefulSet
   - group: ''
     kind: Service
+  - group: external-secrets.io
+    kind: SecretStore
+  - group: external-secrets.io
+    kind: ExternalSecret
+  - group: networking.k8s.io
+    kind: Ingress    
   clusterResourceWhitelist:
   - group: '*'
     kind: '*'
