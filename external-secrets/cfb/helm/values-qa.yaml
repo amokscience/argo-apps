@@ -1,0 +1,9 @@
+namespace: qa
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: cfb-qa-secrets
+  awsSecretsManagerKeys:
+    cfbApiKey: cfb
+    redisAddress: redis-addr

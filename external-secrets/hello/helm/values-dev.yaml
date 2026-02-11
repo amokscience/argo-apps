@@ -1,0 +1,9 @@
+namespace: dev
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: hello-dev-config-secret
+  awsSecretsManagerKeys:
+    applicationConfig: config
+  serviceAccountName: hello

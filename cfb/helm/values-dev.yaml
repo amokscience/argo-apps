@@ -1,0 +1,29 @@
+# Dev environment values
+replicaCount: 1
+image:
+  repository: amokscience/cfb
+  pullPolicy: IfNotPresent
+  tag: "dev-d616938"
+
+env:
+  HTTP_PORT: 8070
+  CFBD_API_BASE: https://api.collegefootballdata.com
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+serviceAccount:
+  create: true
+  name: cfb
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  host: dev.cfb.local

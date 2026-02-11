@@ -1,0 +1,32 @@
+# Dev environment values
+replicaCount: 1
+image:
+  repository: amokscience/hello
+  pullPolicy: Always
+  tag: "dev-8363918"
+
+env:
+  HTTP_PORT: 8050
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+ingress:
+  enabled: true
+  host: dev.hello.local
+
+serviceAccount:
+  create: true
+  name: hello
+
+service:
+  type: ClusterIP
+  port: 80
+
+autoscaling:
+  enabled: false
