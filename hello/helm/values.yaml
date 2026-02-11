@@ -37,3 +37,9 @@ ingress:
   enabled: false
   host: ""
 
+externalSecrets:
+  enabled: false
+  awsRegion: ""
+  secretName: ""
+  awsSecrets:
+    secretName: ""

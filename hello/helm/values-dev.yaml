@@ -32,3 +32,10 @@ service:
 
 autoscaling:
   enabled: false
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretName: hello-dev-secrets
+  awsSecrets:
+    secretName: eso-secret-hello
