@@ -3,7 +3,7 @@ namespace: staging
 externalSecrets:
   enabled: true
   awsRegion: us-west-2
-  secretResourceName: hello-staging-config-secret
-  awsSecretsManagerKeys:
-    applicationConfig: config
+  secretName: hello-staging-secrets
+  awsSecrets:
+    secretName: eso-secret-hello
   serviceAccountName: hello
