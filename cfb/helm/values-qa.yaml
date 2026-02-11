@@ -1,4 +1,6 @@
 # QA environment values
+namespace: qa
+
 replicaCount: 1
 image:
   repository: amokscience/cfb
@@ -20,3 +22,11 @@ resources:
 ingress:
   enabled: true
   host: qa.cfb.local
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: cfb-qa-secrets
+  awsSecretsManagerKeys:
+    cfbApiKey: cfb
+    redisAddress: redis-addr

@@ -1,4 +1,6 @@
 # Staging environment values
+namespace: staging
+
 replicaCount: 1
 image:
   repository: amokscience/cfb
@@ -20,3 +22,11 @@ resources:
 ingress:
   enabled: true
   host: staging.cfb.local
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: cfb-staging-secrets
+  awsSecretsManagerKeys:
+    cfbApiKey: cfb
+    redisAddress: redis-addr

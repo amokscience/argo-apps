@@ -1,4 +1,6 @@
 # Dev environment values
+namespace: dev
+
 replicaCount: 1
 image:
   repository: amokscience/hello
@@ -30,3 +32,10 @@ service:
 
 autoscaling:
   enabled: false
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: hello-dev-config-secret
+  awsSecretsManagerKeys:
+    applicationConfig: config

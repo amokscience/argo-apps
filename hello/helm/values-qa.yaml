@@ -1,4 +1,6 @@
 # QA environment values
+namespace: qa
+
 replicaCount: 1
 image:
   repository: amokscience/hello
@@ -26,3 +28,10 @@ serviceAccount:
 
 autoscaling:
   enabled: false
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: hello-qa-config-secret
+  awsSecretsManagerKeys:
+    applicationConfig: config

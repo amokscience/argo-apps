@@ -1,4 +1,6 @@
 # Production environment values
+namespace: prod
+
 replicaCount: 2
 image:
   repository: amokscience/cfb
@@ -20,3 +22,11 @@ resources:
 ingress:
   enabled: true
   host: prod.cfb.local
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: cfb-prod-secrets
+  awsSecretsManagerKeys:
+    cfbApiKey: cfb
+    redisAddress: redis-addr

@@ -1,4 +1,6 @@
 # Dev environment values
+namespace: dev
+
 replicaCount: 1
 image:
   repository: amokscience/cfb
@@ -27,3 +29,11 @@ service:
 ingress:
   enabled: true
   host: dev.cfb.local
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: cfb-dev-secrets
+  awsSecretsManagerKeys:
+    cfbApiKey: cfb
+    redisAddress: redis-addr
