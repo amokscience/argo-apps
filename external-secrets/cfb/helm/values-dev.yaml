@@ -5,4 +5,5 @@ externalSecrets:
   awsRegion: us-west-2
   secretResourceName: cfb-dev-secrets
   awsSecretsManagerKeys:
-    configKey: cfb/dev/config
+    cfbApiKey: cfb
+    redisAddress: redis-addr

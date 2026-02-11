@@ -5,4 +5,5 @@ externalSecrets:
   awsRegion: us-west-2
   secretResourceName: cfb-staging-secrets
   awsSecretsManagerKeys:
-    configKey: cfb/staging/config
+    cfbApiKey: cfb
+    redisAddress: redis-addr
