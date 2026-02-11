@@ -42,7 +42,7 @@ argocd repo add https://github.com/amokscience/argo-apps --insecure-skip-server-
 
 # 7. Deploy root application (scaffolds everything else)
 # ============================================================================
-# This single Application creates all child apps:
+# This single Application creates all child apps: 
 #   - nginx-ingress (NGINX Ingress Controller)
 #   - argocd-keycloak-oidc (ArgoCD OIDC ConfigMaps)
 #   - counting-dev (Counting application with ingress)
