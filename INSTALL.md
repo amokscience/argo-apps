@@ -39,27 +39,21 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 
 # 6. Deploy External Secrets Operator (required before CFB and Hello apps)
 # ============================================================================
-# This must deploy before CFB and Hello, which depend on ESO to fetch secrets from AWS
+# This must deploy before root app, since CFB and Hello use ESO to fetch secrets from AWS
 kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\external-secrets-operator-app.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/external-secrets-webhook -n external-secrets
 
-# 7. Deploy External Secrets configuration for CFB and Hello
-# ============================================================================
-# These create SecretStore and ExternalSecret resources that sync secrets from AWS
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\cfb\external-secrets-config-dev-app.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\hello\external-secrets-config-hello-dev-app.yaml
-
-# 8. Deploy root application (scaffolds user applications and projects)
+# 7. Deploy root application (scaffolds user applications and projects)
 # ============================================================================
 # This single Application discovers and creates:
 #   - AppProjects (argocd/applications/projects/)
 #   - User apps (argocd/applications/)
 #     - nginx-ingress (NGINX Ingress Controller)
 #     - counting-dev (Counting application with ingress)
-#     - cfb-dev (CFB application with external secrets)
-#     - hello-dev (Hello application with external secrets)
+#     - cfb-dev (CFB application with integrated external secrets)
+#     - hello-dev (Hello application with integrated external secrets)
 # 
-# Note: ArgoCD OIDC config and External Secrets Operator components are applied 
+# Note: ArgoCD OIDC config and External Secrets Operator are applied 
 # directly above as prerequisites, not managed by app-of-apps
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=condition=available --timeout=300s application/root -n argocd
