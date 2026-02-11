@@ -7,15 +7,18 @@ metadata:
     {{- include "hello.labels" . | nindent 4 }}
 spec:
   ingressClassName: nginx
+  - secretName: hello-local-tls
+    hosts:
+    - {{ .Values.ingress.host | quote }}
   rules:
-    - host: {{ .Values.ingress.host }}
+    - host: {{ .Values.ingress.host | quote }}
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "hello.fullname" . }}
-                port:
-                  number: 80
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ include "hello.fullname" . }}
+              port:
+                number: 80
 {{- end }}
