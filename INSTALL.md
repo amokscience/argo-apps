@@ -26,7 +26,8 @@ kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# 4. Create ArgoCD ingress and OIDC config
+# 4. Create ArgoCD ingress and OIDC config (direct apply, not via app-of-apps)
+# These are prerequisites for ArgoCD to function, not user applications
 kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
 
@@ -40,12 +41,14 @@ argocd login argocd.local --plaintext --insecure --username admin --password $Ar
 # 6. Register repo with ArgoCD
 argocd repo add https://github.com/amokscience/argo-apps --insecure-skip-server-verification
 
-# 7. Deploy root application (scaffolds everything else)
+# 7. Deploy root application (scaffolds user applications only)
 # ============================================================================
-# This single Application creates all child apps: 
+# This single Application creates child apps:
 #   - nginx-ingress (NGINX Ingress Controller)
-#   - argocd-keycloak-oidc (ArgoCD OIDC ConfigMaps)
 #   - counting-dev (Counting application with ingress)
+# 
+# Note: ArgoCD OIDC config is applied directly above as a prerequisite,
+# not managed by app-of-apps
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=condition=available --timeout=300s application/root -n argocd
 
