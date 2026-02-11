@@ -19,13 +19,3 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
-  # ADD THIS BLOCK:
-  ignoreDifferences:
-  - group: apiextensions.k8s.io
-    kind: CustomResourceDefinition
-    jsonPointers:
-    - /status
-  # ADD syncOption:
-  syncOptions:
-  - CreateNamespace=true
-  - RespectIgnoreDifferences=true  # Ensures ignores apply during sync
