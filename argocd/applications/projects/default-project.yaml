@@ -1,26 +1,31 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: default  # This updates your existing default project
-  namespace: argocd
+  name: default
+  namespace: argocd  # Replace with your Argo CD namespace
 spec:
-  description: Default ArgoCD project
+  description: Default Argo CD project
+  sourceRepos:
+  - '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  namespaceResourceWhitelist:  # Use whitelist (allow list) instead of blacklist
+  - group: ''
+    kind: ConfigMap
+  - group: rbac.authorization.k8s.io
+    kind: Role
+  - group: ''
+    kind: ServiceAccount
+  # Add other common resources Argo CD typically needs:
+  - group: ''
+    kind: Secret
+  - group: apps
+    kind: Deployment
+  - group: apps
+    kind: StatefulSet
+  - group: ''
+    kind: Service
   clusterResourceWhitelist:
   - group: '*'
     kind: '*'
-  namespaceResourceWhitelist:  # CRITICAL: Add this
-  - group: ''
-    kind: Pod
-  - group: apps
-    kind: ReplicaSet
-  - group: ''
-    kind: Service
-  - group: ''
-    kind: Endpoints
-  - group: discovery
-    kind: EndpointSlice
-  destinations:
-  - namespace: '*'
-    server: 'https://kubernetes.default.svc'
-  sourceRepos:
-  - '*'
