@@ -30,6 +30,7 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 # These are prerequisites for ArgoCD to function, not user applications
 kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\projects\devtest-project.yaml
 
 # 5. Restart ArgoCD server
 kubectl rollout restart deployment/argocd-server -n argocd

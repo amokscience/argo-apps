@@ -42,3 +42,8 @@ spec:
     kind: Ingress
     jsonPointers:
     - /status
+  # election
+  - group: coordination.k8s.io
+    kind: Lease
+    jqPathExpressions:
+      - .spec
