@@ -20,25 +20,25 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
-  # GLOBAL IGNORES - applies to ALL child apps
   ignoreDifferences:
-  # Ignore nodePort drift (nginx-ingress, LoadBalancer services)
+  # nginx-ingress Service nodePorts (null vs assigned)
   - group: ""
     kind: Service
     jsonPointers:
-    - /spec/ports/*/nodePort
-  # Ignore Ingress status (loadBalancer, conditions)
+    - /spec/ports/0/nodePort
+    - /spec/ports/1/nodePort
+  # F5 AppProtect CRDs (status/managed fields)
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+    - /status
+  # ArgoCD ConfigMaps (generated params)
+  - group: ""
+    kind: ConfigMap
+    jsonPointers:
+    - /data
+  # Ingress status
   - group: networking.k8s.io
     kind: Ingress
     jsonPointers:
     - /status
-  # Ignore Deployment status/replicas drift
-  - group: apps
-    kind: Deployment
-    jsonPointers:
-    - /status
-  # Ignore Secret data rotation
-  - group: ""
-    kind: Secret
-    jsonPointers:
-    - /data
