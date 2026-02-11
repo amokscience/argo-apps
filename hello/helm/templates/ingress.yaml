@@ -7,18 +7,19 @@ metadata:
     {{- include "hello.labels" . | nindent 4 }}
 spec:
   ingressClassName: nginx
+  tls:                    # ← Line ~11-14: 2 spaces indent
   - secretName: hello-local-tls
-    hosts:
+    hosts:               # ← Line 13: MUST be here
     - {{ .Values.ingress.host | quote }}
-  rules:
-    - host: {{ .Values.ingress.host | quote }}
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: {{ include "hello.fullname" . }}
-              port:
-                number: 80
+  rules:                  # ← Same level as tls
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "hello.fullname" . }}
+            port:
+              number: 80
 {{- end }}
