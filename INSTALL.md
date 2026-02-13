@@ -14,7 +14,7 @@ kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AW
 # These must exist before root app is deployed
 
 # ArgoCD OIDC secret
-kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=RyTihUdhH8ahTO6MIHJCkQ7DmolHlM3c -n argocd
+kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd
 kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n argocd
 
 # ArgoCD TLS cert
