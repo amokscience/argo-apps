@@ -7,7 +7,7 @@
 # 1. Create namespaces
 kubectl create namespace argocd
 kubectl create namespace dev
-kubectl create secret generic aws-credentials --from-literal=accessKeyID=AKIAXV4RC5DPSJ5AT75X --from-literal=secretAccessKey=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 -n dev
+kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AWS_ACCESS_KEY --from-literal=secretAccessKey=$env:AWS_SECRET_KEY -n dev
 
 # 2. Create required secrets (manual prerequisite)
 # ============================================================================
