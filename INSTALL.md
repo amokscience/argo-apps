@@ -27,22 +27,29 @@ kubectl create secret tls hello-local-tls --cert=c:\certs\_wildcard.hello.local+
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# 4. Create ArgoCD ingress and OIDC config (direct apply, not via app-of-apps)
+# 4. Create ArgoCD ingress
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
+
+# 5. Create Keycloak  OIDC
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloak-oidc.yaml
+
+# 6. Create devtest project
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\project-devtest.yaml
 
-# 5. Restart ArgoCD server
+# 7. Restart ArgoCD server
 kubectl rollout restart deployment/argocd-server -n argocd
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# 7. Deploy root application (scaffolds user applications and projects)
+# 8. Deploy root application (scaffolds user applications and projects)
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/root -n argocd --timeout=300s
 
 # ============================================================================
 # VERIFICATION
 # ============================================================================
+# nginx-ingress takes ~5 minutes to go fully healthy
+kubectl wait --for=jsonpath='{.status.health.status}'=Healthy application/nginx-ingress -n argocd --timeout=600s
+
 # Verify all apps are synced:
 kubectl get applications -n argocd
 
@@ -50,9 +57,9 @@ kubectl get applications -n argocd
 # ACCESS INSTRUCTIONS
 # ============================================================================
 
-# 2. Access ArgoCD: https://argocd.local
-# 3. Access Counting App: https://dev.counting.local
-# 4. Get ArgoCD admin password:
+# Access ArgoCD: https://argocd.local
+# Access Counting App: https://dev.counting.local
+# Get ArgoCD admin password:
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 echo ""
