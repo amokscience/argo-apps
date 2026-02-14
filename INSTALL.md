@@ -29,13 +29,17 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 
 # 4. Create ArgoCD ingress and OIDC config (direct apply, not via app-of-apps)
 # These are prerequisites for ArgoCD to function, not user applications
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\project-devtest.yaml
+
+# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-bootstrap-app.yaml
+
+# Keep these if we ditche argocd-bootstrap-app.yaml
+# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
+# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
+# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\project-devtest.yaml
 
 # 5. Restart ArgoCD server
-kubectl rollout restart deployment/argocd-server -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+# kubectl rollout restart deployment/argocd-server -n argocd
+# kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # 6. Deploy External Secrets Operator (required before CFB and Hello apps)
 # ============================================================================
@@ -56,8 +60,11 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 # Note: ArgoCD OIDC config and External Secrets Operator are applied 
 # directly above as prerequisites, not managed by app-of-apps
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
-kubectl wait --for=condition=available --timeout=300s application/root -n argocd
+kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/argocd-bootstrap -n argocd --timeout=300s
 
+kubectl rollout restart deployment/argocd-server -n argocd
+# kubectl wait --for=condition=available --timeout=300s application/root -n argocd
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 # ============================================================================
 # VERIFICATION
 # ============================================================================
