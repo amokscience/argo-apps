@@ -30,12 +30,19 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   scopes: '[groups, email]'
-  policy.default: 'role:viewer'
+  policy.default: ''
   policy.csv: |
-    # Grant admin role to argocd-admins group from Keycloak
-    g, argocd-admins, role:admin
-    # Grant read-only to argocd-viewers group
-    g, argocd-viewers, role:viewer
+    # Superuser - full admin access
+    g, admin, role:admin
+    
+    # Dev users - access only to devtest project applications
+    p, role:devtest-developer, applications, get, devtest/*, allow
+    p, role:devtest-developer, applications, sync, devtest/*, allow
+    p, role:devtest-developer, applications, override, devtest/*, allow
+    p, role:devtest-developer, applications, update, devtest/*, allow
+    p, role:devtest-developer, logs, get, devtest/*, allow
+    p, role:devtest-developer, exec, create, devtest/*, allow
+    g, dev, role:devtest-developer
 ---
 # Ensure server.insecure is set
 apiVersion: v1
