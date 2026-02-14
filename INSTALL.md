@@ -33,19 +33,13 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 # kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-bootstrap-app.yaml
 
 # Keep these if we ditche argocd-bootstrap-app.yaml
-# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-ingress.yaml
-# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-keycloak-oidc.yaml
-# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\project-devtest.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloak-oidc.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\project-devtest.yaml
 
 # 5. Restart ArgoCD server
 # kubectl rollout restart deployment/argocd-server -n argocd
 # kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
-
-# 6. Deploy External Secrets Operator (required before CFB and Hello apps)
-# ============================================================================
-# This must deploy before root app, since CFB and Hello use ESO to fetch secrets from AWS
-# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\external-secrets-operator-app.yaml
-# kubectl wait --for=condition=available --timeout=300s deployment/external-secrets-operator-webhook -n external-secrets
 
 # 7. Deploy root application (scaffolds user applications and projects)
 # ============================================================================
