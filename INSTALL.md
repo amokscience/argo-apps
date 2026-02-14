@@ -15,7 +15,9 @@ kubectl apply -f c:\code\argo-apps\argocd\bootstrap\namespaces.yaml
 kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AWS_ACCESS_KEY --from-literal=secretAccessKey=$env:AWS_SECRET_KEY -n dev
 
 # ArgoCD OIDC secret
-kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd -l app.kubernetes.io/part-of=argocd
+kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd
+kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n argocd
+
 
 # ArgoCD TLS cert
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
