@@ -40,8 +40,13 @@ data:
     p, role:devtest-developer, applications, sync, devtest/*, allow
     p, role:devtest-developer, applications, override, devtest/*, allow
     p, role:devtest-developer, applications, update, devtest/*, allow
+    p, role:devtest-developer, applications, delete, devtest/*, allow
+    p, role:devtest-developer, applications, create, devtest/*, allow
     p, role:devtest-developer, logs, get, devtest/*, allow
     p, role:devtest-developer, exec, create, devtest/*, allow
+    p, role:devtest-developer, projects, get, devtest, allow
+    p, role:devtest-developer, repositories, get, *, allow
+    p, role:devtest-developer, clusters, get, *, allow
     g, dev, role:devtest-developer
 ---
 # Ensure server.insecure is set
