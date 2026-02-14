@@ -66,3 +66,17 @@ echo ""
 echo "^-- Copy admin password above"
 echo "ArgoCD URL: https://argocd.local"
 echo "Counting App URL: https://dev.counting.local"
+
+# ============================================================================
+# RBAC MANAGEMENT (GitOps)
+# ============================================================================
+# After initial bootstrap, RBAC policies are managed through GitOps.
+# The argocd-rbac Application automatically syncs changes from:
+#   argocd/rbac/argocd-rbac-cm.yaml
+#
+# To update RBAC policies:
+# 1. Edit argocd/rbac/argocd-rbac-cm.yaml in git
+# 2. Commit and push changes
+# 3. ArgoCD will auto-sync the ConfigMap
+# 4. Restart ArgoCD server: kubectl rollout restart deployment/argocd-server -n argocd
+
