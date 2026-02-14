@@ -28,37 +28,18 @@ kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argop
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # 4. Create ArgoCD ingress and OIDC config (direct apply, not via app-of-apps)
-# These are prerequisites for ArgoCD to function, not user applications
-
-# kubectl apply --server-side -f c:\code\argo-apps\argocd\applications\argocd-bootstrap-app.yaml
-
-# Keep these if we ditche argocd-bootstrap-app.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloak-oidc.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\project-devtest.yaml
 
 # 5. Restart ArgoCD server
-# kubectl rollout restart deployment/argocd-server -n argocd
-# kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+kubectl rollout restart deployment/argocd-server -n argocd
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # 7. Deploy root application (scaffolds user applications and projects)
-# ============================================================================
-# This single Application discovers and creates:
-#   - AppProjects (argocd/applications/projects/)
-#   - User apps (argocd/applications/)
-#     - nginx-ingress (NGINX Ingress Controller)
-#     - counting-dev (Counting application with ingress)
-#     - cfb-dev (CFB application with integrated external secrets)
-#     - hello-dev (Hello application with integrated external secrets)
-# 
-# Note: ArgoCD OIDC config and External Secrets Operator are applied 
-# directly above as prerequisites, not managed by app-of-apps
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
-kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/argocd-bootstrap -n argocd --timeout=300s
+kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/root -n argocd --timeout=300s
 
-kubectl rollout restart deployment/argocd-server -n argocd
-# kubectl wait --for=condition=available --timeout=300s application/root -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 # ============================================================================
 # VERIFICATION
 # ============================================================================
@@ -69,13 +50,8 @@ kubectl get applications -n argocd
 # ACCESS INSTRUCTIONS
 # ============================================================================
 
-# 1. Add to hosts file (C:\Windows\System32\drivers\etc\hosts): 
-#    127.0.0.1 argocd.local
-#    127.0.0.1 dev.counting.local
-#
 # 2. Access ArgoCD: https://argocd.local
 # 3. Access Counting App: https://dev.counting.local
-#
 # 4. Get ArgoCD admin password:
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
