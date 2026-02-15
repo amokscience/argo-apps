@@ -43,3 +43,6 @@ externalSecrets:
   secretName: ""
   awsSecrets:
     secretName: ""
+
+monitoring:
+  enabled: false

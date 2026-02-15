@@ -18,12 +18,15 @@ kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AW
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd
 kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n argocd
 
-
-# ArgoCD TLS cert
+# TLS certificates
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
 kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.local+1.pem --key=c:\certs\_wildcard.counting.local+1-key.pem -n dev
 kubectl create secret tls cfb-local-tls --cert=c:\certs\_wildcard.cfb.local+1.pem --key=c:\certs\_wildcard.cfb.local+1-key.pem -n dev
 kubectl create secret tls hello-local-tls --cert=c:\certs\_wildcard.hello.local+1.pem --key=c:\certs\_wildcard.hello.local+1-key.pem -n dev
+
+# Monitoring TLS (create namespace first since it will be auto-created later)
+kubectl create namespace monitoring
+kubectl create secret tls grafana-local-tls --cert=c:\certs\_wildcard.local+1.pem --key=c:\certs\_wildcard.local+1-key.pem -n monitoring
 
 # 3. Install ArgoCD bootstrap manifests (stable release)
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -61,13 +64,15 @@ kubectl get applications -n argocd
 
 # Access ArgoCD: https://argocd.local
 # Access Counting App: https://dev.counting.local
-# Get ArgoCD admin password:
+# Access Grafana: https://grafana.local (user: admin, password: admin)
 
+# Get ArgoCD admin password:
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 echo ""
 echo "^-- Copy admin password above"
 echo "ArgoCD URL: https://argocd.local"
 echo "Counting App URL: https://dev.counting.local"
+echo "Grafana URL: https://grafana.local"
 
 # ============================================================================
 # RBAC MANAGEMENT (GitOps)
