@@ -53,6 +53,10 @@ spec:
           enabled: false
         kubeEtcd:
           enabled: false
+        
+        # Disable node-exporter (doesn't work on Docker Desktop)
+        prometheus-node-exporter:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
