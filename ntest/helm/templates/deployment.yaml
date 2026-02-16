@@ -21,6 +21,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          capabilities:
+            add:
+              - NET_RAW
         ports:
         - name: http
           containerPort: {{ .Values.env.HTTP_PORT }}
