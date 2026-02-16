@@ -10,68 +10,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://prometheus-community.github.io/helm-charts
-    chart: kube-prometheus-stack
-    targetRevision: 55.0.0
-    helm:
-      releaseName: kube-prometheus-stack
-      values: |
-        # Grafana configuration
-        grafana:
-          enabled: true
-          adminPassword: admin
-          ingress:
-            enabled: true
-            ingressClassName: nginx
-            hosts:
-            - grafana.local
-            tls:
-            - secretName: grafana-local-tls
-              hosts:
-              - grafana.local
-        
-        # Prometheus configuration
-        prometheus:
-          prometheusSpec:
-            # Discover ServiceMonitors in all namespaces
-            serviceMonitorSelectorNilUsesHelmValues: false
-            podMonitorSelectorNilUsesHelmValues: false
-            retention: 7d
-            storageSpec:
-              volumeClaimTemplate:
-                spec:
-                  accessModes: ["ReadWriteOnce"]
-                  resources:
-                    requests:
-                      storage: 5Gi
-            # Reduced resource requests for local testing
-            resources:
-              requests:
-                cpu: 100m
-                memory: 256Mi
-              limits:
-                cpu: 500m
-                memory: 512Mi
-        
-        # Don't scrape kube-system by default (reduce noise)
-        kubeProxy:
-          enabled: false
-        kubeScheduler:
-          enabled: false
-        kubeControllerManager:
-          enabled: false
-        kubeEtcd:
-          enabled: false
-        
-        # Disable node-exporter (doesn't work on Docker Desktop)
-        prometheus-node-exporter:
-          enabled: false
-        
-        # Disable admission webhooks (not needed for local development)
-        # Prevents hook conflicts on reinstalls
-        prometheusOperator:
-          admissionWebhooks:
-            enabled: false
+    repoURL: https://github.com/amokscience/argo-apps
+    targetRevision: main
+    path: argocd/applications/kustomization
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -83,20 +24,3 @@ spec:
     - CreateNamespace=true
     - ServerSideApply=true
     - RespectIgnoreDifferences=true
-  ignoreDifferences:
-  - group: apps
-    kind: DaemonSet
-    name: kube-prometheus-stack-prometheus-node-exporter
-  - group: apiextensions.k8s.io
-    kind: CustomResourceDefinition
-    jsonPointers:
-    - /status
-  - group: ""
-    kind: Service
-    jsonPointers:
-    - /spec/ports/0/nodePort
-    - /spec/ports/1/nodePort
-  - group: coordination.k8s.io
-    kind: Lease
-    jqPathExpressions:
-      - .spec

@@ -1,12 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: monitoring
 
 helmCharts:
 - name: kube-prometheus-stack
   repo: https://prometheus-community.github.io/helm-charts
-  version: 56.6.2
+  version: 55.0.0
   releaseName: kube-prometheus-stack
-  namespace: monitoring
   valuesInline:
     grafana:
       enabled: true
@@ -47,7 +47,7 @@ helmCharts:
       enabled: false
     kubeControllerManager:
       enabled: false
-    kubeEtc:
+    kubeEtcd:
       enabled: false
     
     prometheus-node-exporter:
@@ -57,15 +57,14 @@ helmCharts:
       admissionWebhooks:
         enabled: false
 
-# Remove the node-exporter DaemonSet that Helm renders anyway
-resources: []
-
-patchesJson6902:
+# Remove the node-exporter DaemonSet completely
+patches:
 - target:
-    group: apps
-    version: v1
     kind: DaemonSet
     name: kube-prometheus-stack-prometheus-node-exporter
   patch: |-
-    - op: remove
-      path: /
+    apiVersion: apps/v1
+    kind: DaemonSet
+    metadata:
+      name: kube-prometheus-stack-prometheus-node-exporter
+    $patch: delete
