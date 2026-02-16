@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: amokscience/ntest
   pullPolicy: IfNotPresent
-  tag: "dev-e18fe6b"
+  tag: "dev-a0578c7"
 
 env:
   HTTP_PORT: 8080
