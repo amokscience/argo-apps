@@ -10,9 +10,60 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/amokscience/argo-apps
-    targetRevision: main
-    path: argocd/applications/kustomization
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 55.0.0
+    helm:
+      releaseName: kube-prometheus-stack
+      values: |
+        grafana:
+          enabled: true
+          adminPassword: admin
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+            - grafana.local
+            tls:
+            - secretName: grafana-local-tls
+              hosts:
+              - grafana.local
+        
+        prometheus:
+          prometheusSpec:
+            serviceMonitorSelectorNilUsesHelmValues: false
+            podMonitorSelectorNilUsesHelmValues: false
+            retention: 7d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 5Gi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
+        
+        kubeProxy:
+          enabled: false
+        kubeScheduler:
+          enabled: false
+        kubeControllerManager:
+          enabled: false
+        kubeEtcd:
+          enabled: false
+        
+        prometheus-node-exporter:
+          enabled: false
+        
+        prometheusOperator:
+          admissionWebhooks:
+            enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
