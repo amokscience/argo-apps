@@ -48,6 +48,9 @@ affinity: {}
 env:
   - name: LOG_LEVEL
     value: "debug"
+
+monitoring:
+  enabled: true
   - name: ENVIRONMENT
     value: "dev"
 

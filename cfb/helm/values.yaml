@@ -37,3 +37,6 @@ ingress:
   enabled: false
   host: ""
 
+monitoring:
+  enabled: false
+

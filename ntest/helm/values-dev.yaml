@@ -32,3 +32,6 @@ ingress:
 
 externalSecrets:
   enabled: false
+
+monitoring:
+  enabled: true

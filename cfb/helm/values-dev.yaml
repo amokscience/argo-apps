@@ -37,3 +37,6 @@ externalSecrets:
   awsSecretsManagerKeys:
     cfbApiKey: cfb
     redisAddress: redis-addr
+
+monitoring:
+  enabled: true

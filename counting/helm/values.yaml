@@ -1,11 +1,19 @@
 replicaCount: 1
 
 image:
-  repository: amokscience/ntest
+  repository: amokscience/counting
   pullPolicy: IfNotPresent
   tag: "latest"
 
-env: {}
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
 
 resources: {}
 
@@ -17,25 +25,9 @@ autoscaling:
 
 nodeSelector: {}
 
-affinity: {}
-
 tolerations: []
 
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  create: true
-  annotations: {}
-  name: ""
-
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  host: ""
+affinity: {}
 
 monitoring:
   enabled: false
