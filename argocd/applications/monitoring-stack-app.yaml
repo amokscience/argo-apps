@@ -4,7 +4,7 @@ metadata:
   name: kube-prometheus-stack
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
@@ -14,6 +14,7 @@ spec:
     chart: kube-prometheus-stack
     targetRevision: 56.6.2
     helm:
+      releaseName: kube-prometheus-stack
       values: |
         # Grafana configuration
         grafana:
@@ -42,7 +43,15 @@ spec:
                   accessModes: ["ReadWriteOnce"]
                   resources:
                     requests:
-                      storage: 10Gi
+                      storage: 5Gi
+            # Reduced resource requests for local testing
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: 500m
+                memory: 512Mi
         
         # Don't scrape kube-system by default (reduce noise)
         kubeProxy:
@@ -57,6 +66,12 @@ spec:
         # Disable node-exporter (doesn't work on Docker Desktop)
         prometheus-node-exporter:
           enabled: false
+        
+        # Disable admission webhooks (not needed for local development)
+        # Prevents hook conflicts on reinstalls
+        prometheusOperator:
+          admissionWebhooks:
+            enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
@@ -69,3 +84,29 @@ spec:
     - ServerSideApply=true
     - RespectIgnoreDifferences=true
     - Replace=true
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+    - /status
+  - group: ""
+    kind: Service
+    jsonPointers:
+    - /spec/ports/0/nodePort
+    - /spec/ports/1/nodePort
+  - group: coordination.k8s.io
+    kind: Lease
+    jqPathExpressions:
+      - .spec
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: kube-prometheus-stack-admission
+  - group: rbac.authorization.k8s.io
+    kind: ClusterRoleBinding
+    name: kube-prometheus-stack-admission
+  - group: rbac.authorization.k8s.io
+    kind: Role
+    name: kube-prometheus-stack-admission
+  - group: rbac.authorization.k8s.io
+    kind: RoleBinding
+    name: kube-prometheus-stack-admission
