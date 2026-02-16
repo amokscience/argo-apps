@@ -85,6 +85,9 @@ spec:
     - RespectIgnoreDifferences=true
     - Replace=true
   ignoreDifferences:
+  - group: apps
+    kind: DaemonSet
+    name: kube-prometheus-stack-prometheus-node-exporter
   - group: apiextensions.k8s.io
     kind: CustomResourceDefinition
     jsonPointers:
@@ -98,15 +101,3 @@ spec:
     kind: Lease
     jqPathExpressions:
       - .spec
-  - group: rbac.authorization.k8s.io
-    kind: ClusterRole
-    name: kube-prometheus-stack-admission
-  - group: rbac.authorization.k8s.io
-    kind: ClusterRoleBinding
-    name: kube-prometheus-stack-admission
-  - group: rbac.authorization.k8s.io
-    kind: Role
-    name: kube-prometheus-stack-admission
-  - group: rbac.authorization.k8s.io
-    kind: RoleBinding
-    name: kube-prometheus-stack-admission
