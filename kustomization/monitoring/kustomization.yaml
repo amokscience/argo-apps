@@ -1,0 +1,71 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+- name: kube-prometheus-stack
+  repo: https://prometheus-community.github.io/helm-charts
+  version: 56.6.2
+  releaseName: kube-prometheus-stack
+  namespace: monitoring
+  valuesInline:
+    grafana:
+      enabled: true
+      adminPassword: admin
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        hosts:
+        - grafana.local
+        tls:
+        - secretName: grafana-local-tls
+          hosts:
+          - grafana.local
+    
+    prometheus:
+      prometheusSpec:
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        retention: 7d
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 5Gi
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+    
+    kubeProxy:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeEtc:
+      enabled: false
+    
+    prometheus-node-exporter:
+      enabled: false
+    
+    prometheusOperator:
+      admissionWebhooks:
+        enabled: false
+
+# Remove the node-exporter DaemonSet that Helm renders anyway
+resources: []
+
+patchesJson6902:
+- target:
+    group: apps
+    version: v1
+    kind: DaemonSet
+    name: kube-prometheus-stack-prometheus-node-exporter
+  patch: |-
+    - op: remove
+      path: /
