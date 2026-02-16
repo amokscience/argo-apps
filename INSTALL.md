@@ -58,6 +58,8 @@ kubectl wait --for=jsonpath='{.status.health.status}'=Healthy application/nginx-
 # Verify all apps are synced:
 kubectl get applications -n argocd
 
+Send-EventBridgeNotification "deploy done"
+
 # ============================================================================
 # ACCESS INSTRUCTIONS
 # ============================================================================

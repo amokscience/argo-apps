@@ -1,0 +1,25 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "ntest.fullname" . }}
+  labels:
+    {{- include "ntest.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx
+  tls:
+  - secretName: ntest-local-tls
+    hosts:
+    - {{ .Values.ingress.host }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "ntest.fullname" . }}
+            port:
+              number: 80
+{{- end }}
