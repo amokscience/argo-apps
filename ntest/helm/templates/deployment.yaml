@@ -22,9 +22,11 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
+          allowPrivilegeEscalation: true
           capabilities:
             add:
               - NET_RAW
+              - NET_ADMIN
         ports:
         - name: http
           containerPort: {{ .Values.env.HTTP_PORT }}
