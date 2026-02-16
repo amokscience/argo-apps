@@ -39,3 +39,6 @@ externalSecrets:
   secretName: hello-dev-secrets
   awsSecrets:
     secretName: eso-secret-hello
+
+monitoring:
+  enabled: true

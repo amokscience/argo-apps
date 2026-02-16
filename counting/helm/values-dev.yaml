@@ -51,8 +51,6 @@ env:
 
 monitoring:
   enabled: true
-  - name: ENVIRONMENT
-    value: "dev"
 
 livenessProbe:
   httpGet:
