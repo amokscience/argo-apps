@@ -1,0 +1,80 @@
+# Strategic merge patch for argocd-repo-server Deployment
+# Adds an init container to download and use a specific Helm version
+# 
+# This patch is applied via Kustomize to inject Helm version switching capability
+# into the repo-server pod without rebuilding the container image.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+  namespace: argocd
+spec:
+  template:
+    spec:
+      # Add init container before any other containers
+      initContainers:
+      - name: install-helm-version
+        image: alpine:3.18
+        command:
+          - sh
+          - -c
+          - |
+            set -e
+            HELM_VERSION="${HELM_VERSION:-}"
+            
+            # If no version specified, use built-in Helm
+            if [ -z "$HELM_VERSION" ]; then
+              echo "[INFO] HELM_VERSION not set - using built-in Helm"
+              exit 0
+            fi
+            
+            echo "[INFO] Helm custom version mode - installing v${HELM_VERSION}"
+            apk add --no-cache curl tar gzip
+            
+            cd /tmp
+            HELM_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
+            echo "[INFO] Downloading: ${HELM_URL}"
+            
+            if ! curl -fL "${HELM_URL}" -o helm.tar.gz; then
+              echo "[ERROR] Failed to download Helm v${HELM_VERSION}"
+              exit 1
+            fi
+            
+            tar xzf helm.tar.gz
+            
+            # Backup original binary
+            if [ -f /usr/local/bin/helm ]; then
+              echo "[INFO] Backing up original Helm to /usr/local/bin/helm.original"
+              cp /usr/local/bin/helm /usr/local/bin/helm.original
+            fi
+            
+            # Install new version
+            cp linux-amd64/helm /usr/local/bin/helm
+            chmod +x /usr/local/bin/helm
+            
+            echo "[INFO] Successfully installed Helm:"
+            /usr/local/bin/helm version
+            
+        env:
+        - name: HELM_VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: argocd-cm
+              key: helm.version
+              optional: true
+        volumeMounts:
+        - name: local-bin
+          mountPath: /usr/local/bin
+      
+      # Mount volume for init container to write binaries to
+      volumes:
+      - name: local-bin
+        emptyDir: {}
+      
+      # Patch container to use the volume
+      containers:
+      - name: argocd-repo-server
+        volumeMounts:
+        - name: local-bin
+          mountPath: /usr/local/bin

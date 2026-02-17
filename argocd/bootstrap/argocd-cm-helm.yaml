@@ -1,0 +1,37 @@
+# ============================================================================
+# ArgoCD ConfigMap - Example helm.version configuration
+# ============================================================================
+#
+# This shows where to add the optional helm.version setting in argocd-cm
+# 
+# By default, argocd-cm is installed as part of the ArgoCD manifests.
+# To enable custom Helm versions, add the helm.version key below.
+#
+# There are two ways to apply this:
+# 
+# 1. PATCH EXISTING ConfigMap (after ArgoCD install):
+#    kubectl patch configmap argocd-cm -n argocd -p '{"data":{"helm.version":"3.12.0"}}'
+#
+# 2. EDIT IN-PLACE:
+#    kubectl edit configmap argocd-cm -n argocd
+#    Then add under "data:" section:
+#      helm.version: "3.12.0"
+#
+# Then restart repo-server:
+#    kubectl rollout restart deployment/argocd-repo-server -n argocd
+#
+# ============================================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  # ========================================================================
+  # OPTIONAL: Uncomment to use a specific Helm version
+  # ========================================================================
+  helm.version: "3.12.0"
+  
+  # Other ArgoCD configurations can go here...
+  # (keep existing settings when you patch)
