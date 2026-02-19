@@ -15,6 +15,7 @@ spec:
       releaseName: nginx-ingress
       values: |
         controller:
+          replicaCount: 2
           service:
             type: LoadBalancer
   destination:
