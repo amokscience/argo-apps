@@ -32,6 +32,8 @@ data:
   # OPTIONAL: Uncomment to use a specific Helm version
   # ========================================================================
   helm.version: "3.12.0"
+  timeout.reconciliation: "60s"
+  timeout.reconciliation.jitter: "0s"
   
   # Other ArgoCD configurations can go here...
   # (keep existing settings when you patch)
