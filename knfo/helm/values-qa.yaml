@@ -1,14 +1,14 @@
-# Dev environment values
-namespace: dev
+# QA environment values
+namespace: qa
 
 replicaCount: 1
 image:
   repository: amokscience/knfo
   pullPolicy: IfNotPresent
-  tag: "dev-35b7a65"
+  tag: "qa-latest"
 
 env:
-  HTTP_PORT: 8080
+  HTTP_PORT: 8070
 
 resources:
   requests:
@@ -18,20 +18,9 @@ resources:
     cpu: 100m
     memory: 100Mi
 
-serviceAccount:
-  create: true
-  name: knfo
-
-service:
-  type: ClusterIP
-  port: 80
-
 ingress:
   enabled: true
-  host: dev.knfo.local
+  host: qa.knfo.local
 
 externalSecrets:
   enabled: false
-
-monitoring:
-  enabled: true

@@ -1,0 +1,26 @@
+# Production environment values
+namespace: prod
+
+replicaCount: 2
+image:
+  repository: amokscience/knfo
+  pullPolicy: IfNotPresent
+  tag: "prod-latest"
+
+env:
+  HTTP_PORT: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+ingress:
+  enabled: true
+  host: prod.knfo.local
+
+externalSecrets:
+  enabled: false
