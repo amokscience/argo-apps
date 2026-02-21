@@ -5,7 +5,7 @@ replicaCount: 2
 image:
   repository: amokscience/knfo
   pullPolicy: IfNotPresent
-  tag: "prod-806abb6"
+  tag: "prod-fc3860b"
 
 resources:
   requests:
