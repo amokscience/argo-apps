@@ -7,9 +7,6 @@ image:
   pullPolicy: IfNotPresent
   tag: "prod-latest"
 
-env:
-  HTTP_PORT: 8080
-
 resources:
   requests:
     cpu: 100m

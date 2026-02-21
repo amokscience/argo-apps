@@ -7,9 +7,6 @@ image:
   pullPolicy: IfNotPresent
   tag: "dev-35b7a65"
 
-env:
-  HTTP_PORT: 8080
-
 resources:
   requests:
     cpu: 50m

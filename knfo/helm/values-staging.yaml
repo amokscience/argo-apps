@@ -7,9 +7,6 @@ image:
   pullPolicy: IfNotPresent
   tag: "staging-latest"
 
-env:
-  HTTP_PORT: 8070
-
 resources:
   requests:
     cpu: 50m
