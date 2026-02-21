@@ -31,11 +31,7 @@ ingress:
   host: dev.knfo.local
 
 externalSecrets:
-  enabled: true
-  awsRegion: us-west-2
-  secretResourceName: knfo-dev-secrets
-  awsSecretsManagerKeys:
-    knfoApiKey: knfo
+  enabled: false
 
 monitoring:
   enabled: true

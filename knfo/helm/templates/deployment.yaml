@@ -28,11 +28,6 @@ spec:
         env:
         - name: HTTP_PORT
           value: "{{ .Values.env.HTTP_PORT }}"
-        - name: KNFO_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.externalSecrets.secretResourceName }}
-              key: knfo-api-key
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

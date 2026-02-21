@@ -37,5 +37,8 @@ ingress:
   enabled: false
   host: ""
 
+externalSecrets:
+  enabled: false
+
 monitoring:
   enabled: false
