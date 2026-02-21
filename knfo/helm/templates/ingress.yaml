@@ -1,0 +1,25 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "knfo.fullname" . }}
+  labels:
+    {{- include "knfo.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx
+  tls:
+  - secretName: knfo-local-tls
+    hosts:
+    - {{ .Values.ingress.host }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "knfo.fullname" . }}
+            port:
+              number: 80
+{{- end }}

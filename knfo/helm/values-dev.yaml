@@ -1,0 +1,41 @@
+# Dev environment values
+namespace: dev
+
+replicaCount: 1
+image:
+  repository: amokscience/knfo
+  pullPolicy: IfNotPresent
+  tag: "dev-latest"
+
+env:
+  HTTP_PORT: 8070
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 100Mi
+
+serviceAccount:
+  create: true
+  name: knfo
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  host: dev.knfo.local
+
+externalSecrets:
+  enabled: true
+  awsRegion: us-west-2
+  secretResourceName: knfo-dev-secrets
+  awsSecretsManagerKeys:
+    knfoApiKey: knfo
+
+monitoring:
+  enabled: true
