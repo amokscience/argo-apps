@@ -40,3 +40,7 @@ externalSecrets:
 
 monitoring:
   enabled: false
+
+rbac:
+  enabled: false
+  rules: []
