@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: amokscience/knfo
   pullPolicy: IfNotPresent
-  tag: "dev-058ac49"
+  tag: "dev-35b7a65"
 
 env:
   HTTP_PORT: 8070
