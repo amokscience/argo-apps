@@ -62,6 +62,18 @@ rbac:
   - apiGroups: ["events.k8s.io"]
     resources: ["events"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["apiextensions.k8s.io"]
+    resources: ["customresourcedefinitions"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications", "appprojects", "applicationsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["external-secrets.io"]
+    resources: ["externalsecrets", "secretstores", "clustersecretstores", "clusterexternalsecrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["monitoring.coreos.com"]
+    resources: ["servicemonitors", "prometheusrules", "podmonitors", "probes", "alertmanagers", "prometheuses"]
+    verbs: ["get", "list", "watch"]
 
 externalSecrets:
   enabled: false
