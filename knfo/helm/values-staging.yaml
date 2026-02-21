@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: amokscience/knfo
   pullPolicy: IfNotPresent
-  tag: "staging-55a91da"
+  tag: "staging-d92b918"
 
 resources:
   requests:
