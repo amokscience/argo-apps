@@ -6,91 +6,109 @@ metadata:
 data:
   # ============================================================================
   # Service - Slack via incoming webhook
-  # slack-api-url is pulled from argocd-notifications-secret via ExternalSecret
+  # slack-api-url is stored in argocd-notifications-secret under key slack-api-url
   # ============================================================================
-  service.slack: |
-    apiURL: $slack-api-url
-    username: ArgoCD
+  service.webhook.slack: |
+    url: $slack-api-url
+    headers:
+    - name: Content-Type
+      value: application/json
 
   # ============================================================================
   # Templates
   # ============================================================================
   template.app-sync-succeeded: |
-    slack:
-      attachments: |
-        [{
-          "color": "#18be52",
-          "title": "✅ {{ .app.metadata.name }} synced successfully",
-          "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-          "fields": [
-            { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-            { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-            { "title": "Status", "value": "{{.app.status.sync.status}}", "short": true },
-            { "title": "Health", "value": "{{.app.status.health.status}}", "short": true }
-          ]
-        }]
+    webhook:
+      slack:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "color": "#18be52",
+              "title": "✅ {{ .app.metadata.name }} synced successfully",
+              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+              "fields": [
+                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
+                { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
+                { "title": "Status", "value": "{{.app.status.sync.status}}", "short": true },
+                { "title": "Health", "value": "{{.app.status.health.status}}", "short": true }
+              ]
+            }]
+          }
 
   template.app-sync-failed: |
-    slack:
-      attachments: |
-        [{
-          "color": "#E96D76",
-          "title": "❌ {{ .app.metadata.name }} sync failed",
-          "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-          "fields": [
-            { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-            { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-            { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true },
-            { "title": "Phase", "value": "{{.app.status.operationState.phase}}", "short": true },
-            { "title": "Message", "value": "{{.app.status.operationState.message}}", "short": false }
-          ]
-        }]
+    webhook:
+      slack:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "color": "#E96D76",
+              "title": "❌ {{ .app.metadata.name }} sync failed",
+              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+              "fields": [
+                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
+                { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
+                { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true },
+                { "title": "Phase", "value": "{{.app.status.operationState.phase}}", "short": true },
+                { "title": "Message", "value": "{{.app.status.operationState.message}}", "short": false }
+              ]
+            }]
+          }
 
   template.app-health-degraded: |
-    slack:
-      attachments: |
-        [{
-          "color": "#f4c030",
-          "title": "⚠️ {{ .app.metadata.name }} health degraded",
-          "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-          "fields": [
-            { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-            { "title": "Health", "value": "{{.app.status.health.status}}", "short": true },
-            { "title": "Message", "value": "{{.app.status.health.message}}", "short": false }
-          ]
-        }]
+    webhook:
+      slack:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "color": "#f4c030",
+              "title": "⚠️ {{ .app.metadata.name }} health degraded",
+              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+              "fields": [
+                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
+                { "title": "Health", "value": "{{.app.status.health.status}}", "short": true },
+                { "title": "Message", "value": "{{.app.status.health.message}}", "short": false }
+              ]
+            }]
+          }
 
   template.app-out-of-sync: |
-    slack:
-      attachments: |
-        [{
-          "color": "#8a8a8a",
-          "title": "🔄 {{ .app.metadata.name }} is out of sync",
-          "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-          "fields": [
-            { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-            { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-            { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true }
-          ]
-        }]
+    webhook:
+      slack:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "color": "#8a8a8a",
+              "title": "🔄 {{ .app.metadata.name }} is out of sync",
+              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+              "fields": [
+                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
+                { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
+                { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true }
+              ]
+            }]
+          }
 
   # ============================================================================
   # Triggers
   # ============================================================================
   trigger.on-sync-succeeded: |
-    - when: app.status.operationState.phase in ['Succeeded']
+    - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded']
       send: [app-sync-succeeded]
 
   trigger.on-sync-failed: |
-    - when: app.status.operationState.phase in ['Error', 'Failed']
+    - when: app.status.operationState != nil && app.status.operationState.phase in ['Error', 'Failed']
       send: [app-sync-failed]
 
   trigger.on-health-degraded: |
-    - when: app.status.health.status == 'Degraded'
+    - when: app.status.health != nil && app.status.health.status == 'Degraded'
       send: [app-health-degraded]
 
   trigger.on-out-of-sync: |
-    - when: app.status.sync.status == 'OutOfSync'
+    - when: app.status.sync != nil && app.status.sync.status == 'OutOfSync'
       send: [app-out-of-sync]
 
   # ============================================================================
@@ -104,7 +122,7 @@ data:
 
   subscriptions: |
     - recipients:
-      - slack:argocd-notifications
+      - webhook:slack
       triggers:
       - on-sync-succeeded
       - on-sync-failed
