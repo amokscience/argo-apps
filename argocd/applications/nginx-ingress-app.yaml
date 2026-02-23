@@ -20,10 +20,10 @@ spec:
             type: LoadBalancer
           config:
             upstream-keepalive-connections: "32"
-            upstream-keepalive-timeout: "60"
-            upstream-keepalive-requests: "100"
-            keep-alive: "0"
-            keep-alive-requests: "100"
+            upstream-keepalive-timeout: "86400"
+            upstream-keepalive-requests: "1000"
+            keep-alive: "86400"
+            keep-alive-requests: "1000"
   destination:
     server: https://kubernetes.default.svc
     namespace: nginx-ingress
