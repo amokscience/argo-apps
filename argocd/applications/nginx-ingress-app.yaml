@@ -18,6 +18,12 @@ spec:
           replicaCount: 2
           service:
             type: LoadBalancer
+          config:
+            upstream-keepalive-connections: "32"
+            upstream-keepalive-timeout: "60"
+            upstream-keepalive-requests: "100"
+            keep-alive: "0"
+            keep-alive-requests: "100"
   destination:
     server: https://kubernetes.default.svc
     namespace: nginx-ingress
