@@ -6,6 +6,9 @@ metadata:
 data:
   # ============================================================================
   # Service - Slack via incoming webhook
+  # NOTE: `url: $slack-api-url` resolves from secret `argocd-notifications-secret`
+  # NOTE: Do NOT use `$argocd-notifications-secret:slack-api-url` here (unsupported)
+  # NOTE: Keep webhook recipient name and template target as `slack` (see subscriptions)
   # slack-api-url is stored in argocd-notifications-secret under key slack-api-url
   # ============================================================================
   service.webhook.slack: |
@@ -13,6 +16,8 @@ data:
 
   # ============================================================================
   # Templates
+  # NOTE: Keep titles ASCII-safe. Emoji/special chars can be mangled by encoding
+  # pipelines and lead to invalid template parsing at runtime.
   # ============================================================================
   template.app-sync-succeeded: |
     webhook:
@@ -91,6 +96,8 @@ data:
 
   # ============================================================================
   # Triggers
+  # NOTE: Keep nil checks to avoid evaluation errors when status fields are unset
+  # (e.g. operationState can be nil before first sync operation).
   # ============================================================================
   trigger.on-sync-succeeded: |
     - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded']
@@ -110,10 +117,10 @@ data:
 
   # ============================================================================
   # Default subscriptions - applies to all applications
+  # NOTE: For webhook services, recipient MUST be the webhook name only (`slack`).
+  # Using `webhook:slack` causes: "notification service 'webhook' is not supported".
   # ============================================================================
   defaultTriggers: |
-    - on-sync-succeeded
-    - on-sync-failed
     - on-health-degraded
     - on-out-of-sync
 
@@ -121,8 +128,6 @@ data:
     - recipients:
         - slack
       triggers:
-        - on-sync-succeeded
-        - on-sync-failed
         - on-health-degraded
         - on-out-of-sync
 
