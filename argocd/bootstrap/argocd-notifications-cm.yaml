@@ -119,7 +119,7 @@ data:
 
   subscriptions: |
     - recipients:
-        - webhook:slack
+        - slack
       triggers:
         - on-sync-succeeded
         - on-sync-failed
