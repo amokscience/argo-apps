@@ -13,7 +13,7 @@ kubectl apply -f c:\code\argo-apps\argocd\bootstrap\namespaces.yaml
 
 # AWS credentials for External Secrets
 kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AWS_ACCESS_KEY --from-literal=secretAccessKey=$env:AWS_SECRET_KEY -n dev
-kubectl create secret generic argocd-notifications-secret --from-literal=accessKeyID=$env:SLACK_WEBHOOK -n argocd
+kubectl create secret generic argocd-notifications-secret --from-literal=slack-api-url=$env:SLACK_WEBHOOK -n argocd
 
 # ArgoCD OIDC secret
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd
