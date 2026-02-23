@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: amokscience/knfo
   pullPolicy: IfNotPresent
-  tag: "dev-79073a8"
+  tag: "dev-40ad7c2"
 
 resources:
   requests:
