@@ -11,26 +11,27 @@ data:
     webhook: $slack-api-url
 
   # ========================================================================
-  # Templates (corrected to use "slack:" instead of "webhook:")
+  # Templates (pure YAML, no JSON)
   # ========================================================================
+
   template.app-sync-succeeded: |
     slack:
       attachments:
         - color: "#18be52"
           title: "✅ {{ .app.metadata.name }} synced successfully"
-          title_link: "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}"
+          title_link: "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}"
           fields:
             - title: "Environment"
-              value: "{{.app.metadata.namespace}}"
+              value: "{{ .app.metadata.namespace }}"
               short: true
             - title: "Revision"
-              value: "{{.app.status.sync.revision}}"
+              value: "{{ .app.status.sync.revision }}"
               short: true
             - title: "Status"
-              value: "{{.app.status.sync.status}}"
+              value: "{{ .app.status.sync.status }}"
               short: true
             - title: "Health"
-              value: "{{.app.status.health.status}}"
+              value: "{{ .app.status.health.status }}"
               short: true
 
   template.app-sync-failed: |
@@ -38,22 +39,22 @@ data:
       attachments:
         - color: "#E96D76"
           title: "❌ {{ .app.metadata.name }} sync failed"
-          title_link: "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}"
+          title_link: "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}"
           fields:
             - title: "Environment"
-              value: "{{.app.metadata.namespace}}"
+              value: "{{ .app.metadata.namespace }}"
               short: true
             - title: "Revision"
-              value: "{{.app.status.sync.revision}}"
+              value: "{{ .app.status.sync.revision }}"
               short: true
             - title: "Sync Status"
-              value: "{{.app.status.sync.status}}"
+              value: "{{ .app.status.sync.status }}"
               short: true
             - title: "Phase"
-              value: "{{.app.status.operationState.phase}}"
+              value: "{{ .app.status.operationState.phase }}"
               short: true
             - title: "Message"
-              value: "{{.app.status.operationState.message}}"
+              value: "{{ .app.status.operationState.message }}"
               short: false
 
   template.app-health-degraded: |
@@ -61,16 +62,16 @@ data:
       attachments:
         - color: "#f4c030"
           title: "⚠️ {{ .app.metadata.name }} health degraded"
-          title_link: "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}"
+          title_link: "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}"
           fields:
             - title: "Environment"
-              value: "{{.app.metadata.namespace}}"
+              value: "{{ .app.metadata.namespace }}"
               short: true
             - title: "Health"
-              value: "{{.app.status.health.status}}"
+              value: "{{ .app.status.health.status }}"
               short: true
             - title: "Message"
-              value: "{{.app.status.health.message}}"
+              value: "{{ .app.status.health.message }}"
               short: false
 
   template.app-out-of-sync: |
@@ -78,16 +79,16 @@ data:
       attachments:
         - color: "#8a8a8a"
           title: "🔄 {{ .app.metadata.name }} is out of sync"
-          title_link: "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}"
+          title_link: "{{ .context.argocdUrl }}/applications/{{ .app.metadata.name }}"
           fields:
             - title: "Environment"
-              value: "{{.app.metadata.namespace}}"
+              value: "{{ .app.metadata.namespace }}"
               short: true
             - title: "Revision"
-              value: "{{.app.status.sync.revision}}"
+              value: "{{ .app.status.sync.revision }}"
               short: true
             - title: "Sync Status"
-              value: "{{.app.status.sync.status}}"
+              value: "{{ .app.status.sync.status }}"
               short: true
 
   # ========================================================================
@@ -119,7 +120,7 @@ data:
     - on-out-of-sync
 
   # ========================================================================
-  # Subscriptions (corrected)
+  # Subscriptions (correct)
   # ========================================================================
   subscriptions: |
     - recipients:
