@@ -9,7 +9,7 @@ data:
   # slack-api-url is stored in argocd-notifications-secret under key slack-api-url
   # ============================================================================
   service.webhook.slack: |
-    url: $argocd-notifications-secret:slack-api-url
+    url: $slack-api-url
     headers:
     - name: Content-Type
       value: application/json
