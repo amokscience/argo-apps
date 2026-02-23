@@ -122,12 +122,12 @@ data:
 
   subscriptions: |
     - recipients:
-      - webhook:slack
+        - webhook:slack
       triggers:
-      - on-sync-succeeded
-      - on-sync-failed
-      - on-health-degraded
-      - on-out-of-sync
+        - on-sync-succeeded
+        - on-sync-failed
+        - on-health-degraded
+        - on-out-of-sync
 
   # ArgoCD URL used in notification links
   context: |
