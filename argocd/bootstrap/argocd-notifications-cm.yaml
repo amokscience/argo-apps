@@ -10,9 +10,6 @@ data:
   # ============================================================================
   service.webhook.slack: |
     url: $slack-api-url
-    headers:
-    - name: Content-Type
-      value: application/json
 
   # ============================================================================
   # Templates
