@@ -15,13 +15,7 @@ spec:
       releaseName: nginx-ingress
       values: |
         controller:
-          replicaCount: 1
-          hostNetwork: true
-          hostPort:
-            enabled: true
-            http: 80
-            https: 443
-          dnsPolicy: ClusterFirstWithHostNet
+          replicaCount: 2
           service:
             type: LoadBalancer
           config:
