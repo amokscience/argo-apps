@@ -83,7 +83,7 @@ data:
         body: |
           {
             "attachments": [{
-              "color": "#8a8a8a",
+              "color": "#f4c030",
               "title": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync",
               "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
               "fields": [
