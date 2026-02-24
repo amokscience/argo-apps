@@ -21,7 +21,7 @@ kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n ar
 
 # TLS certificates
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
-kubectl create secret tls counting-local-tls --cert=c:\certs\_wildcard.counting.local+1.pem --key=c:\certs\_wildcard.counting.local+1-key.pem -n dev
+kubectl create secret tls counting-tls --cert=c:\certs\_wildcard.counting.pem --key=c:\certs\_wildcard.counting-key.pem -n dev
 kubectl create secret tls cfb-local-tls --cert=c:\certs\_wildcard.cfb.local+1.pem --key=c:\certs\_wildcard.cfb.local+1-key.pem -n dev
 kubectl create secret tls hello-local-tls --cert=c:\certs\_wildcard.hello.local+1.pem --key=c:\certs\_wildcard.hello.local+1-key.pem -n dev
 kubectl create secret tls ntest-local-tls --cert=c:\certs\_wildcard.ntest.local+1.pem --key=c:\certs\_wildcard.ntest.local+1-key.pem -n dev
@@ -108,7 +108,7 @@ Send-EventBridgeNotification "deploy done"
 # ============================================================================
 
 # Access ArgoCD: https://argocd.local
-# Access Counting App: https://dev.counting.local
+# Access Counting App: https://dev.counting
 # Access Grafana: https://grafana.local (user: admin, password: admin)
 
 # Get ArgoCD admin password:
@@ -116,7 +116,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 echo ""
 echo "^-- Copy admin password above"
 echo "ArgoCD URL: https://argocd.local"
-echo "Counting App URL: https://dev.counting.local"
+echo "Counting App URL: https://dev.counting"
 echo "Grafana URL: https://grafana.local"
 
 # ============================================================================

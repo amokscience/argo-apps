@@ -14,7 +14,7 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
   tls:
-  - secretName: counting-local-tls
+  - secretName: counting-tls
     hosts:
     {{- range .Values.ingress.hosts }}
     - {{ .host }}
