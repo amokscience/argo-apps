@@ -111,8 +111,8 @@ data:
     - when: app.status.operationState != nil &&
             app.status.operationState.phase in ['Succeeded'] &&
             app.status.operationState.syncResult != nil &&
-            app.status.operationState.syncResult.resources != nil &&
-            len(app.status.operationState.syncResult.resources) > 0
+      app.status.operationState.syncResult.revision != nil
+    oncePer: app.status.operationState.syncResult.revision
       send: [app-sync-succeeded]
 
   trigger.on-health-degraded: |
