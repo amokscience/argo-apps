@@ -107,6 +107,14 @@ data:
     - when: app.status.operationState != nil && app.status.operationState.phase in ['Error', 'Failed']
       send: [app-sync-failed]
 
+  trigger.on-sync-succeeded-with-changes: |
+    - when: app.status.operationState != nil &&
+            app.status.operationState.phase in ['Succeeded'] &&
+            app.status.operationState.syncResult != nil &&
+            app.status.operationState.syncResult.resources != nil &&
+            len(app.status.operationState.syncResult.resources) > 0
+      send: [app-sync-succeeded]
+
   trigger.on-health-degraded: |
     - when: app.status.health != nil && app.status.health.status == 'Degraded'
       send: [app-health-degraded]
@@ -121,6 +129,7 @@ data:
   # Using `webhook:slack` causes: "notification service 'webhook' is not supported".
   # ============================================================================
   defaultTriggers: |
+    - on-sync-succeeded-with-changes
     - on-health-degraded
     - on-out-of-sync
 
@@ -128,6 +137,7 @@ data:
     - recipients:
         - slack
       triggers:
+        - on-sync-succeeded-with-changes
         - on-health-degraded
         - on-out-of-sync
 
