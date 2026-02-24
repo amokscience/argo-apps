@@ -108,11 +108,8 @@ data:
       send: [app-sync-failed]
 
   trigger.on-sync-succeeded-with-changes: |
-    - when: app.status.operationState != nil &&
-            app.status.operationState.phase in ['Succeeded'] &&
-            app.status.operationState.syncResult != nil &&
-      app.status.operationState.syncResult.revision != nil
-    oncePer: app.status.operationState.syncResult.revision
+    - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded'] && app.status.operationState.syncResult != nil && app.status.operationState.syncResult.revision != nil
+      oncePer: app.status.operationState.syncResult.revision
       send: [app-sync-succeeded]
 
   trigger.on-health-degraded: |
