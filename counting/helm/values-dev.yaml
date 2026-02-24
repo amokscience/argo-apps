@@ -4,7 +4,7 @@ replicaCount: 1
 image:
   repository: amokscience/counting
   pullPolicy: Always
-  tag: dev-725e726
+  tag: dev-af77d13
 
 nameOverride: ""
 fullnameOverride: ""
