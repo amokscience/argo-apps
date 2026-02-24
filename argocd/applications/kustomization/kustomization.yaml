@@ -15,11 +15,11 @@ helmCharts:
         enabled: true
         ingressClassName: nginx
         hosts:
-        - grafana.local
+        - grafana.amok
         tls:
-        - secretName: grafana-local-tls
+        - secretName: grafana-tls
           hosts:
-          - grafana.local
+          - grafana.amok
     
     prometheus:
       prometheusSpec:

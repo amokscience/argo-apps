@@ -30,7 +30,7 @@ kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\c
 
 # Monitoring TLS (create namespace first since it will be auto-created later)
 kubectl create namespace monitoring
-kubectl create secret tls grafana-local-tls --cert=c:\certs\_wildcard.local+1.pem --key=c:\certs\_wildcard.local+1-key.pem -n monitoring
+kubectl create secret tls grafana-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
 
 # 3. Install ArgoCD bootstrap manifests (stable release)
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -109,7 +109,7 @@ Send-EventBridgeNotification "deploy done"
 
 # Access ArgoCD: https://argocd.amok
 # Access Counting App: https://dev.counting
-# Access Grafana: https://grafana.local (user: admin, password: admin)
+# Access Grafana: https://grafana.amok (user: admin, password: admin)
 
 # Get ArgoCD admin password:
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
@@ -117,7 +117,7 @@ echo ""
 echo "^-- Copy admin password above"
 echo "ArgoCD URL: https://argocd.amok"
 echo "Counting App URL: https://dev.counting"
-echo "Grafana URL: https://grafana.local"
+echo "Grafana URL: https://grafana.amok"
 
 # ============================================================================
 # RBAC MANAGEMENT (GitOps)

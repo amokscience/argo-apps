@@ -34,11 +34,11 @@ spec:
               nginx.org/proxy-read-timeout: "30s"
               nginx.org/proxy-send-timeout: "30s"
             hosts:
-            - grafana.local
+            - grafana.amok
             tls:
-            - secretName: grafana-local-tls
+            - secretName: grafana-tls
               hosts:
-              - grafana.local
+              - grafana.amok
         
         prometheus:
           prometheusSpec:
