@@ -28,7 +28,7 @@ service:
 
 ingress:
   enabled: true
-  host: dev.ntest.local
+  host: dev.ntest
 
 externalSecrets:
   enabled: false

@@ -24,8 +24,8 @@ kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\arg
 kubectl create secret tls counting-tls --cert=c:\certs\_wildcard.counting.pem --key=c:\certs\_wildcard.counting-key.pem -n dev
 kubectl create secret tls cfb-local-tls --cert=c:\certs\_wildcard.cfb.local+1.pem --key=c:\certs\_wildcard.cfb.local+1-key.pem -n dev
 kubectl create secret tls hello-local-tls --cert=c:\certs\_wildcard.hello.local+1.pem --key=c:\certs\_wildcard.hello.local+1-key.pem -n dev
-kubectl create secret tls ntest-local-tls --cert=c:\certs\_wildcard.ntest.local+1.pem --key=c:\certs\_wildcard.ntest.local+1-key.pem -n dev
-kubectl create secret tls knfo-local-tls --cert=c:\certs\_wildcard.knfo.local+1.pem --key=c:\certs\_wildcard.knfo.local+1-key.pem -n dev
+kubectl create secret tls ntest-tls --cert=c:\certs\_wildcard.ntest.pem --key=c:\certs\_wildcard.ntest-key.pem -n dev
+kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\certs\_wildcard.knfo-key.pem -n dev
 
 
 # Monitoring TLS (create namespace first since it will be auto-created later)
