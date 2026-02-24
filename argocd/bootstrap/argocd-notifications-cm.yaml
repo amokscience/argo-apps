@@ -133,4 +133,4 @@ data:
 
   # ArgoCD URL used in notification links
   context: |
-    argocdUrl: https://argocd.local
+    argocdUrl: https://argocd.amok

@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: argocd.local
+  - host: argocd.amok
     http:
       paths:
       - path: /
@@ -22,5 +22,5 @@ spec:
               name: https
   tls:
   - hosts:
-    - argocd.local
+    - argocd.amok
     secretName: argocd-tls
