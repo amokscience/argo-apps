@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:                    # ← Line ~11-14: 2 spaces indent
-  - secretName: hello-local-tls
+  - secretName: hello-tls
     hosts:               # ← Line 13: MUST be here
     - {{ .Values.ingress.host | quote }}
   rules:                  # ← Same level as tls

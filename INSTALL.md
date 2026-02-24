@@ -22,8 +22,8 @@ kubectl label secret argocd-oidc-keycloak app.kubernetes.io/part-of=argocd -n ar
 # TLS certificates
 kubectl create secret tls argocd-tls --cert=c:\code\argocd.crt --key=c:\code\argocd.key -n argocd
 kubectl create secret tls counting-tls --cert=c:\certs\_wildcard.counting.pem --key=c:\certs\_wildcard.counting-key.pem -n dev
-kubectl create secret tls cfb-local-tls --cert=c:\certs\_wildcard.cfb.local+1.pem --key=c:\certs\_wildcard.cfb.local+1-key.pem -n dev
-kubectl create secret tls hello-local-tls --cert=c:\certs\_wildcard.hello.local+1.pem --key=c:\certs\_wildcard.hello.local+1-key.pem -n dev
+kubectl create secret tls cfb-tls --cert=c:\certs\_wildcard.cfb.pem --key=c:\certs\_wildcard.cfb-key.pem -n dev
+kubectl create secret tls hello-tls --cert=c:\certs\_wildcard.hello.pem --key=c:\certs\_wildcard.hello-key.pem -n dev
 kubectl create secret tls ntest-tls --cert=c:\certs\_wildcard.ntest.pem --key=c:\certs\_wildcard.ntest-key.pem -n dev
 kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\certs\_wildcard.knfo-key.pem -n dev
 

@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - secretName: cfb-local-tls
+  - secretName: cfb-tls
     hosts:
     - {{ .Values.ingress.host }}
   rules:

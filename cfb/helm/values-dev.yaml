@@ -28,7 +28,7 @@ service:
 
 ingress:
   enabled: true
-  host: dev.cfb.local
+  host: dev.cfb
 
 externalSecrets:
   enabled: true
