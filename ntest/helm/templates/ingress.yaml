@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - secretName: ntest-local-tls
+  - secretName: ntest-tls
     hosts:
     - {{ .Values.ingress.host }}
   rules:
