@@ -65,7 +65,7 @@ data:
         body: |
           {
             "attachments": [{
-              "color": "#f4c030",
+              "color": "#dc3545",
               "title": "[DEGRADED] {{ .app.metadata.name }} health degraded",
               "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
               "fields": [
