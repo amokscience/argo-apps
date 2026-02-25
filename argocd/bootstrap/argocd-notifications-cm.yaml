@@ -82,12 +82,16 @@ data:
         method: POST
         body: |
           {
-            "attachments": [
-              {
-                "color": "#f4c030",
-                "fallback": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync"
-              }
-            ]
+            "attachments": [{
+              "color": "#f5f031",
+              "title": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync",
+              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+              "fields": [
+                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
+                { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
+                { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true }
+              ]
+            }]
           }
 
   # ============================================================================
