@@ -82,22 +82,10 @@ data:
         method: POST
         body: |
           {
-            "text": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync",
-            "blocks": [
+            "attachments": [
               {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*[OUT-OF-SYNC]* <{{.context.argocdUrl}}/applications/{{.app.metadata.name}}|{{ .app.metadata.name }}> is out of sync"
-                }
-              },
-              {
-                "type": "section",
-                "fields": [
-                  { "type": "mrkdwn", "text": "*Environment*\n{{ .app.metadata.namespace }}" },
-                  { "type": "mrkdwn", "text": "*Revision*\n{{ .app.status.sync.revision }}" },
-                  { "type": "mrkdwn", "text": "*Sync Status*\n{{ .app.status.sync.status }}" }
-                ]
+                "color": "#f4c030",
+                "fallback": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync"
               }
             ]
           }
