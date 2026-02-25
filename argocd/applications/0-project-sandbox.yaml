@@ -3,6 +3,8 @@ kind: AppProject
 metadata:
   name: sandbox
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   description: Sandbox project for experimentation and testing
   

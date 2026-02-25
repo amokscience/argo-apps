@@ -1,31 +1,25 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: counting-dev
+  name: knfo-dev
   namespace: argocd
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
 spec:
-  project: devtest
+  project: default
   source:
     repoURL: https://github.com/amokscience/argo-apps
     targetRevision: main
-    path: counting/helm
+    path: knfo/helm
     helm:
       valueFiles:
       - values-dev.yaml
-  
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
-  
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
-  
-  # Ignore certain resource differences
-  ignoreDifferences:
-  - group: apps
-    kind: Deployment
-    jsonPointers:
-    - /spec/replicas

@@ -75,7 +75,7 @@ externalSecrets:
 
 ```powershell
 # Install ESO
-kubectl apply -f argocd/external-secrets-operator-app.yaml
+kubectl apply -f argocd/applications/1-external-secrets-operator-app.yaml
 
 # Sync CFB applications (they will now use ESO)
 kubectl patch application cfb-dev -n argocd --type merge -p '{"metadata":{"annotations":{"sync-trigger":"'$(Get-Date -Format 'yyyyMMddHHmmss')'"}}}'
