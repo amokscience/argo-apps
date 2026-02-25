@@ -69,7 +69,7 @@ spec:
         kubeEtcd:
           enabled: false
         
-        prometheus-node-exporter:
+        nodeExporter:
           enabled: false
         
         prometheusOperator:
@@ -80,7 +80,7 @@ spec:
     namespace: monitoring
   syncPolicy:
     automated:
-      prune: false
+      prune: true
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
