@@ -83,19 +83,23 @@ data:
         body: |
           {
             "text": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync",
-            "attachments": [{
-              "fallback": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync | env={{ .app.metadata.namespace }} | revision={{ .app.status.sync.revision }} | status={{ .app.status.sync.status }}",
-              "color": "#f4c030",
-              "title": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync",
-              "text": "Environment: {{ .app.metadata.namespace }}\nRevision: {{ .app.status.sync.revision }}\nSync Status: {{ .app.status.sync.status }}",
-              "mrkdwn_in": ["text", "fields"],
-              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-              "fields": [
-                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-                { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-                { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true }
-              ]
-            }]
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*[OUT-OF-SYNC]* <{{.context.argocdUrl}}/applications/{{.app.metadata.name}}|{{ .app.metadata.name }}> is out of sync"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  { "type": "mrkdwn", "text": "*Environment*\n{{ .app.metadata.namespace }}" },
+                  { "type": "mrkdwn", "text": "*Revision*\n{{ .app.status.sync.revision }}" },
+                  { "type": "mrkdwn", "text": "*Sync Status*\n{{ .app.status.sync.status }}" }
+                ]
+              }
+            ]
           }
 
   # ============================================================================
