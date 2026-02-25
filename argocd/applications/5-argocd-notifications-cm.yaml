@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: argocd-notifications-cm
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
 data:
   # ============================================================================
   # Service - Slack via incoming webhook

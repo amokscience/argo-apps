@@ -27,7 +27,6 @@ kubectl create secret tls hello-tls --cert=c:\certs\_wildcard.hello.pem --key=c:
 kubectl create secret tls ntest-tls --cert=c:\certs\_wildcard.ntest.pem --key=c:\certs\_wildcard.ntest-key.pem -n dev
 kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\certs\_wildcard.knfo-key.pem -n dev
 
-
 # Monitoring TLS (create namespace first since it will be auto-created later)
 kubectl create namespace monitoring
 kubectl create secret tls grafana-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
@@ -72,11 +71,12 @@ kubectl rollout restart deployment/argocd-repo-server -n argocd
 # 4. Create ArgoCD ingress
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
 
-# 4.5 Set up ArgoCD notifications (Slack)
+# 4.5 ArgoCD notifications (Slack)
 # ============================================================================
-# Secret name must be argocd-notifications-secret, key must be slack-api-url
-
-kubectl apply -f c:\code\argo-apps\argocd\bootstrap\argocd-notifications-cm.yaml
+# ConfigMap is now GitOps-managed from:
+#   c:\code\argo-apps\argocd\applications\5-argocd-notifications-cm.yaml
+# Ensure secret exists before root app deploy:
+#   argocd-notifications-secret (key: slack-api-url)
 
 # 5. Create Keycloak  OIDC
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloak-oidc.yaml

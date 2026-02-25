@@ -38,6 +38,9 @@ Keep the filename prefix and annotation value aligned.
 - `4-dev-knfo-app.yaml`
 - `4-dev-ntest-app.yaml`
 
+### Wave 5 (post-deploy notifications)
+- `5-argocd-notifications-cm.yaml`
+
 ## Adding a New App
 
 - Choose the wave based on dependencies.
