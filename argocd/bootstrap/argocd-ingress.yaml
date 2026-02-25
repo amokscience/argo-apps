@@ -16,7 +16,6 @@ metadata:
     nginx.org/proxy-connect-timeout: "5s"
     nginx.org/proxy-read-timeout: "86400s"
     nginx.org/proxy-send-timeout: "86400s"
-    nginx.org/ssl-services: "argocd-server"
     # CRITICAL: NO ssl-passthrough annotation
 spec:
   ingressClassName: nginx
