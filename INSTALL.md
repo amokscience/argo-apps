@@ -67,8 +67,9 @@ kubectl rollout restart deployment/argocd-repo-server -n argocd
 # For more details, see: c:\code\argo-apps\argocd\bootstrap\HELM_VERSION_README.md
 # ============================================================================
 
-# 4. Create ArgoCD ingress
+# 4. Create ArgoCD ingress and configuration
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cmd-params-cm.yaml
+kubectl apply --server-side -f  c:\code\argo-apps\argocd\bootstrap\argocd-cmyaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
 
 # 4.5 ArgoCD notifications (Slack)
@@ -114,7 +115,6 @@ Send-EventBridgeNotification "deploy done"
 $ArgoPassword = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 argocd login argocd.amok --username admin --password $ArgoPassword --insecure --grpc-web
 
-p
 
 # ============================================================================
 # RBAC MANAGEMENT (GitOps)

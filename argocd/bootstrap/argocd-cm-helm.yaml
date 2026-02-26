@@ -21,13 +21,8 @@
 #    kubectl rollout restart deployment/argocd-repo-server -n argocd
 #
 # ============================================================================
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: argocd-cm
-  namespace: argocd
-data:
+# NOTE: The actual argocd-cm is managed in argocd-cm.yaml.
+# Add helm.version there under data: if needed.
   # ========================================================================
   # OPTIONAL: Uncomment to use a specific Helm version
   # ========================================================================
