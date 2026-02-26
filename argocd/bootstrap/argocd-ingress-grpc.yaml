@@ -5,20 +5,23 @@ metadata:
   namespace: argocd
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
+    # CRITICAL: Higher priority annotation
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
   - host: argocd.amok
     http:
       paths:
-      - path: /api
-        pathType: Prefix
+      - path: /api(/|$)(.*)   # ← Regex catches ALL /api/*
+        pathType: ImplementationSpecific
         backend:
           service:
             name: argocd-server
             port:
               name: https
   tls:
-  - hosts:
-    - argocd.amok
+  - hosts: [argocd.amok]
     secretName: argocd-tls
