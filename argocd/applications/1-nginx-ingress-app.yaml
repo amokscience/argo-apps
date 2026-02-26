@@ -21,6 +21,7 @@ spec:
           service:
             type: LoadBalancer
           config:
+            http2: "true"
             upstream-keepalive-connections: "32"
             upstream-keepalive-timeout: "86400"
             upstream-keepalive-requests: "1000"
