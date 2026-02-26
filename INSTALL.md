@@ -67,25 +67,21 @@ kubectl rollout restart deployment/argocd-repo-server -n argocd
 # For more details, see: c:\code\argo-apps\argocd\bootstrap\HELM_VERSION_README.md
 # ============================================================================
 
-# 4. Create ArgoCD ingress and configuration
+# 4. Apply ArgoCD configuration and ingress, then restart to apply cm changes
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cmd-params-cm.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cm.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
+kubectl rollout restart deployment/argocd-server -n argocd
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # 4.5 ArgoCD notifications (Slack)
 # ============================================================================
 # ConfigMap is now GitOps-managed from:
-#   c:\code\argo-apps\argocd\applications\5-argocd-notifications-cm.yaml
+#   c:\code\argo-apps\argocd\applications\3-argocd-notifications-cm.yaml
 # Ensure secret exists before root app deploy:
 #   argocd-notifications-secret (key: slack-api-url)
 
-# 5. Create Keycloak  OIDC
-kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloak-oidc.yaml
-# required restart for keycloak cm
-kubectl rollout restart deployment/argocd-server -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
-
-# 6. Deploy root application (scaffolds user applications and projects)
+# 5. Deploy root application (scaffolds user applications and projects)
 # NOTE: project-devtest is now GitOps-managed via argocd/applications/0-project-devtest.yaml (sync-wave 0)
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/root -n argocd --timeout=300s

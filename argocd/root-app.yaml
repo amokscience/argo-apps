@@ -32,11 +32,6 @@ spec:
     kind: CustomResourceDefinition
     jsonPointers:
     - /status
-  # ArgoCD ConfigMaps (generated params)
-  - group: ""
-    kind: ConfigMap
-    jsonPointers:
-    - /data
   # Ingress status
   - group: networking.k8s.io
     kind: Ingress
