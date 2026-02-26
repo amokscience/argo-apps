@@ -19,11 +19,13 @@ Keep the filename prefix and annotation value aligned.
 ## Current Wave Layout
 
 ### Wave 0 (foundation)
-- `0-project-sandbox.yaml`
 - `0-argocd-rbac-app.yaml`
+- `0-project-devtest.yaml`
+- `0-project-sandbox.yaml`
 
 ### Wave 1 (platform dependencies)
 - `1-external-secrets-operator-app.yaml`
+- `1-metrics-server-app.yaml`
 - `1-nginx-ingress-app.yaml`
 
 ### Wave 2 (observability)
