@@ -111,12 +111,10 @@ Send-EventBridgeNotification "deploy done"
 # Access Grafana: https://grafana.amok (user: admin, password: admin)
 
 # Get ArgoCD admin password:
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-echo ""
-echo "^-- Copy admin password above"
-echo "ArgoCD URL: https://argocd.amok"
-echo "Counting App URL: https://dev.counting"
-echo "Grafana URL: https://grafana.amok"
+$ArgoPassword = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+argocd login argocd.amok --username admin --password $ArgoPassword --insecure --grpc-web
+
+p
 
 # ============================================================================
 # RBAC MANAGEMENT (GitOps)
