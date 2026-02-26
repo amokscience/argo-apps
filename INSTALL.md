@@ -28,7 +28,6 @@ kubectl create secret tls ntest-tls --cert=c:\certs\_wildcard.ntest.pem --key=c:
 kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\certs\_wildcard.knfo-key.pem -n dev
 
 # Monitoring TLS (create namespace first since it will be auto-created later)
-kubectl create namespace monitoring
 kubectl create secret tls grafana-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
 
 # 3. Install ArgoCD bootstrap manifests (stable release)
@@ -81,13 +80,12 @@ kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress
 
 # 5. Create Keycloak  OIDC
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloak-oidc.yaml
+# required restart for keycloak cm
+kubectl rollout restart deployment/argocd-server -n argocd
+kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # 6. Create devtest project
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\project-devtest.yaml
-
-# 7. Restart ArgoCD server
-kubectl rollout restart deployment/argocd-server -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
 # 8. Deploy root application (scaffolds user applications and projects)
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
