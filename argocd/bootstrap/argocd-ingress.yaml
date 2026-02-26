@@ -4,22 +4,25 @@ metadata:
   name: argocd-server-ingress
   namespace: argocd
   annotations:
-    # This handles BOTH HTTP + gRPC over HTTPS
+    # Backend is ArgoCD serving TLS on port 443.
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    # Long timeouts for gRPC streaming
+    # Long timeouts for WebSocket and gRPC-Web streaming.
     nginx.ingress.kubernetes.io/proxy-read-timeout: "86400"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "86400"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
-    # gRPC health checks
+    # Required for CSRF and OIDC redirect URI generation.
     nginx.ingress.kubernetes.io/upstream-vhost: "argocd.amok"
+    # Disable response buffering so gRPC-Web streaming frames reach the client
+    # immediately instead of being held until the stream closes (causes
+    # "context deadline exceeded" on argocd CLI with --grpc-web).
+    nginx.org/proxy-buffering: "false"
 spec:
   ingressClassName: nginx
   rules:
   - host: argocd.amok
     http:
       paths:
-      # SINGLE PATH - works for UI + /api gRPC + WebSocket
       - path: /
         pathType: Prefix
         backend:

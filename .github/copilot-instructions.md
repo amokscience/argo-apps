@@ -16,4 +16,4 @@ Prefer commands to be one line, do not break up for readability
 
 For multi-step responses that require feedback stop after the first batch of information is requested
 
-
+Never suggest a solution that uses NodePort and kubectl port-forward
