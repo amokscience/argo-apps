@@ -69,6 +69,7 @@ kubectl rollout restart deployment/argocd-repo-server -n argocd
 # ============================================================================
 
 # 4. Create ArgoCD ingress
+kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cmd-params-cm.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
 
 # 4.5 ArgoCD notifications (Slack)
