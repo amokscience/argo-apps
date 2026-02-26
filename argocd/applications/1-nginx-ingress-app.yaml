@@ -21,15 +21,16 @@ spec:
           service:
             type: LoadBalancer
           config:
-            http2: "true"
-            upstream-keepalive-connections: "32"
-            upstream-keepalive-timeout: "86400"
-            upstream-keepalive-requests: "1000"
-            keep-alive: "86400"
-            keep-alive-requests: "1000"
-            client-header-timeout: "86400"
-            client-body-timeout: "86400"
-            keepalive-timeout: "86400"
+            entries:
+              http2: "true"
+              upstream-keepalive-connections: "32"
+              upstream-keepalive-timeout: "86400"
+              upstream-keepalive-requests: "1000"
+              keep-alive: "86400"
+              keep-alive-requests: "1000"
+              client-header-timeout: "86400"
+              client-body-timeout: "86400"
+              keepalive-timeout: "86400"
   destination:
     server: https://kubernetes.default.svc
     namespace: nginx-ingress
