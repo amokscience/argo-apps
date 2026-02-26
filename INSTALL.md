@@ -69,7 +69,7 @@ kubectl rollout restart deployment/argocd-repo-server -n argocd
 
 # 4. Create ArgoCD ingress and configuration
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cmd-params-cm.yaml
-kubectl apply --server-side -f  c:\code\argo-apps\argocd\bootstrap\argocd-cmyaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cm.yaml
 kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
 
 # 4.5 ArgoCD notifications (Slack)
@@ -85,10 +85,8 @@ kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-keycloa
 kubectl rollout restart deployment/argocd-server -n argocd
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# 6. Create devtest project
-kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\project-devtest.yaml
-
-# 8. Deploy root application (scaffolds user applications and projects)
+# 6. Deploy root application (scaffolds user applications and projects)
+# NOTE: project-devtest is now GitOps-managed via argocd/applications/0-project-devtest.yaml (sync-wave 0)
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/root -n argocd --timeout=300s
 
