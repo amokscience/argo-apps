@@ -29,6 +29,7 @@ kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\c
 
 # Monitoring TLS (create namespace first since it will be auto-created later)
 kubectl create secret tls grafana-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
+kubectl create secret tls prometheus-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
 
 # 3. Install ArgoCD bootstrap manifests (stable release)
 kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
