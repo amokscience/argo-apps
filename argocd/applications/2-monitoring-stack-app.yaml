@@ -60,10 +60,15 @@ spec:
                 gnetId: 15758
                 revision: 34
                 datasource: Prometheus
-              # Kubernetes pod detail
-              kubernetes-views-pods:
+              # Kubernetes node detail
+              kubernetes-views-nodes:
                 gnetId: 15759
                 revision: 29
+                datasource: Prometheus
+              # Kubernetes pod detail
+              kubernetes-views-pods:
+                gnetId: 15760
+                revision: 32
                 datasource: Prometheus
 
           ingress:
