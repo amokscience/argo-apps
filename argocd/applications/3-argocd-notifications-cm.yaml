@@ -78,6 +78,23 @@ data:
             }]
           }
 
+  template.app-health-healthy: |
+    webhook:
+      slack:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "color": "#18be52",
+              "title": "[HEALTHY] {{ .app.metadata.name }} is back to healthy",
+              "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
+              "fields": [
+                { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
+                { "title": "Health", "value": "{{.app.status.health.status}}", "short": true }
+              ]
+            }]
+          }
+
   template.app-out-of-sync: |
     webhook:
       slack:
@@ -118,6 +135,11 @@ data:
     - when: app.status.health != nil && app.status.health.status == 'Degraded'
       send: [app-health-degraded]
 
+  trigger.on-health-healthy: |
+    - when: app.status.health != nil && app.status.health.status == 'Healthy'
+      oncePer: app.status.operationState.syncResult.revision
+      send: [app-health-healthy]
+
   trigger.on-out-of-sync: |
     - when: app.status.sync != nil && app.status.sync.status == 'OutOfSync'
       send: [app-out-of-sync]
@@ -130,6 +152,7 @@ data:
   defaultTriggers: |
     - on-sync-succeeded-with-changes
     - on-health-degraded
+    - on-health-healthy
     - on-out-of-sync
 
   subscriptions: |
@@ -138,6 +161,7 @@ data:
       triggers:
         - on-sync-succeeded-with-changes
         - on-health-degraded
+        - on-health-healthy
         - on-out-of-sync
 
   # ArgoCD URL used in notification links
