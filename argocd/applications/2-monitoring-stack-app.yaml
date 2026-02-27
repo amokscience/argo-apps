@@ -19,6 +19,53 @@ spec:
         grafana:
           enabled: true
           adminPassword: admin
+
+          # Sidecar watches all namespaces for ConfigMaps labelled grafana_dashboard: "1"
+          # and hot-loads them — already enabled by default in kube-prometheus-stack.
+          sidecar:
+            dashboards:
+              enabled: true
+              searchNamespace: ALL
+
+          # Additional dashboard provider folder for dashboards pulled from grafana.com
+          dashboardProviders:
+            dashboardproviders.yaml:
+              apiVersion: 1
+              providers:
+              - name: custom
+                orgId: 1
+                folder: Custom
+                type: file
+                disableDeletion: false
+                editable: true
+                options:
+                  path: /var/lib/grafana/dashboards/custom
+
+          # Dashboards downloaded from grafana.com at Grafana pod startup.
+          # gnetId = the numeric ID from the grafana.com/dashboards URL.
+          dashboards:
+            custom:
+              # ArgoCD application/sync/health overview
+              argocd-overview:
+                gnetId: 14584
+                revision: 1
+                datasource: Prometheus
+              # Kubernetes global cluster view (pods, deployments, no node-exporter required)
+              kubernetes-views-global:
+                gnetId: 15757
+                revision: 37
+                datasource: Prometheus
+              # Kubernetes namespace detail
+              kubernetes-views-namespaces:
+                gnetId: 15758
+                revision: 34
+                datasource: Prometheus
+              # Kubernetes pod detail
+              kubernetes-views-pods:
+                gnetId: 15759
+                revision: 29
+                datasource: Prometheus
+
           ingress:
             enabled: true
             ingressClassName: nginx

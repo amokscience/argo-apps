@@ -2,11 +2,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 # This Kustomization patches the ArgoCD repo-server Deployment to support
-# custom Helm version injection via init container.
+# custom Helm version injection via init container, and deploys ArgoCD
+# ServiceMonitors so Prometheus can scrape ArgoCD metrics.
 #
 # Usage: kubectl apply -k argocd/bootstrap/
 #
 # This assumes ArgoCD is already installed and applies ONLY the patch.
+
+resources:
+- argocd-servicemonitor.yaml
 
 patchesStrategicMerge:
 - repo-server-helm-patch.yaml
