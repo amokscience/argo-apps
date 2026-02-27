@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-servicemonitors
+  namespace: argocd
+  annotations:
+    # Wave 3: ServiceMonitor CRD is provided by kube-prometheus-stack (wave 2).
+    # ArgoCD waits for wave 2 to be healthy before applying wave 3.
+    argocd.argoproj.io/sync-wave: "3"
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amokscience/argo-apps
+    targetRevision: main
+    path: argocd/servicemonitors
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

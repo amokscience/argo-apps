@@ -1,7 +1,3 @@
-# MOVED: This file has been relocated to argocd/servicemonitors/argocd-servicemonitor.yaml
-# and is now managed as an ArgoCD Application (3-argocd-servicemonitor-app.yaml).
-# This file is no longer referenced by bootstrap/kustomization.yaml.
-#
 # ServiceMonitors for ArgoCD metrics endpoints.
 # Prometheus (via kube-prometheus-stack with serviceMonitorSelectorNilUsesHelmValues: false)
 # will auto-discover these because no labelSelector is enforced.
