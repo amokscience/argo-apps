@@ -2,26 +2,26 @@
 # HELM VERSION CONFIGURATION
 # ============================================================================
 # 
-# For the init container to work, add this to argocd-cm ConfigMap:
+# The desired Helm version is hardcoded in repo-server-helm-patch.yaml:
 #
-#   helm.version: "3.12.0"    # Use this version
-#   helm.version: "3.13.3"    # Or any other version
+#   HELM_VERSION="3.17.1"    # Change this value to switch versions
 #
-# To disable (use built-in Helm):
-#   - Remove the helm.version line entirely
-#   - OR comment it out
+# To change the Helm version:
+# 1. Edit HELM_VERSION in repo-server-helm-patch.yaml
+# 2. Apply the patch: kubectl apply -k argocd/bootstrap/
+# 3. Restart: kubectl rollout restart deployment/argocd-repo-server -n argocd
+# 4. Verify: kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
 #
-# When you change helm.version, restart repo-server pods:
-#   kubectl rollout restart deployment/argocd-repo-server -n argocd
+# NOTE: helm.version is NOT a native ArgoCD property. Do not add it to argocd-cm.
 #
 # ============================================================================
 # IMPLEMENTATION NOTES
 # ============================================================================
 #
 # The init container (repo-server-helm-patch.yaml):
-# 1. Checks for HELM_VERSION environment variable (from argocd-cm)
-# 2. If NOT set → skips, uses built-in Helm (backward compatible)
-# 3. If set → downloads that version and replaces /usr/local/bin/helm
-# 4. Uses emptyDir volume so replacement is pod-local (no persistence needed)
+# 1. Downloads the specified Helm version from get.helm.sh
+# 2. Writes it to an emptyDir volume at /helm-override/helm
+# 3. The main argocd-repo-server container mounts that file via subPath
+#    over /usr/local/bin/helm ONLY - all other image binaries are untouched
 #
 # ============================================================================

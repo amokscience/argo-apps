@@ -40,15 +40,12 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 # If you need a specific Helm version instead of the built-in one, follow these steps:
 #
 # Files needed (all in c:\code\argo-apps\argocd\bootstrap\):
-#   - repo-server-helm-patch.yaml    (init container definition)
+#   - repo-server-helm-patch.yaml    (init container definition - version hardcoded here)
 #   - kustomization.yaml              (applies the patch)
-#   - argocd-cm-helm.yaml             (example ConfigMap settings)
 #
-# Step 1: Apply the init container patch to repo-server
+# Step 1: Set desired version in repo-server-helm-patch.yaml (HELM_VERSION variable)
+# Step 2: Apply the init container patch to repo-server
 kubectl apply -k c:\code\argo-apps\argocd\bootstrap\
-#
-# Step 2: Configure desired Helm version in argocd-cm (e.g., version 3.12.0)
-kubectl patch configmap argocd-cm -n argocd -p '{"data":{"helm.version":"3.12.0"}}'
 #
 # Step 3: Restart repo-server (init container downloads and installs the version)
 kubectl rollout restart deployment/argocd-repo-server -n argocd
@@ -58,12 +55,9 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-repo-ser
 kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
 #
 # To change to a different Helm version later:
-kubectl patch configmap argocd-cm -n argocd -p '{"data":{"helm.version":"3.13.3"}}'
-kubectl rollout restart deployment/argocd-repo-server -n argocd
-#
-# To disable and use built-in Helm again:
-kubectl patch configmap argocd-cm -n argocd --type json -p='[{"op": "remove", "path": "/data/helm.version"}]'
-kubectl rollout restart deployment/argocd-repo-server -n argocd
+# 1. Edit HELM_VERSION in repo-server-helm-patch.yaml
+# 2. kubectl apply -k c:\code\argo-apps\argocd\bootstrap\
+# 3. kubectl rollout restart deployment/argocd-repo-server -n argocd
 #
 # For more details, see: c:\code\argo-apps\argocd\bootstrap\HELM_VERSION_README.md
 # ============================================================================

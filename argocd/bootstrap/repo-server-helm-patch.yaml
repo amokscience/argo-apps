@@ -26,60 +26,46 @@ spec:
           - -c
           - |
             set -e
-            HELM_VERSION="${HELM_VERSION:-}"
-            
-            # If no version specified, use built-in Helm
-            if [ -z "$HELM_VERSION" ]; then
-              echo "[INFO] HELM_VERSION not set - using built-in Helm"
-              exit 0
-            fi
-            
-            echo "[INFO] Helm custom version mode - installing v${HELM_VERSION}"
+            # Helm version to install. Change this value and re-apply the patch
+            # (kubectl apply -k argocd/bootstrap/) then restart repo-server.
+            HELM_VERSION="3.17.1"
+
+            echo "[INFO] Installing Helm v${HELM_VERSION}"
             apk add --no-cache curl tar gzip
-            
+
             cd /tmp
             HELM_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
             echo "[INFO] Downloading: ${HELM_URL}"
-            
+
             if ! curl -fL "${HELM_URL}" -o helm.tar.gz; then
               echo "[ERROR] Failed to download Helm v${HELM_VERSION}"
               exit 1
             fi
-            
+
             tar xzf helm.tar.gz
-            
-            # Backup original binary
-            if [ -f /usr/local/bin/helm ]; then
-              echo "[INFO] Backing up original Helm to /usr/local/bin/helm.original"
-              cp /usr/local/bin/helm /usr/local/bin/helm.original
-            fi
-            
-            # Install new version
-            cp linux-amd64/helm /usr/local/bin/helm
-            chmod +x /usr/local/bin/helm
-            
-            echo "[INFO] Successfully installed Helm:"
-            /usr/local/bin/helm version
-            
-        env:
-        - name: HELM_VERSION
-          valueFrom:
-            configMapKeyRef:
-              name: argocd-cm
-              key: helm.version
-              optional: true
+
+            # Write into the emptyDir volume (mounted at /helm-override)
+            # This file is then subPath-mounted over /usr/local/bin/helm in
+            # argocd-repo-server, replacing only the helm binary.
+            cp linux-amd64/helm /helm-override/helm
+            chmod +x /helm-override/helm
+
+            echo "[INFO] Successfully staged Helm v${HELM_VERSION}:"
+            /helm-override/helm version
         volumeMounts:
-        - name: local-bin
-          mountPath: /usr/local/bin
+        - name: helm-override
+          mountPath: /helm-override
       
-      # Mount volume for init container to write binaries to
+      # emptyDir staging area for the custom helm binary
       volumes:
-      - name: local-bin
+      - name: helm-override
         emptyDir: {}
       
-      # Patch container to use the volume
+      # Mount only /usr/local/bin/helm via subPath so other binaries in the
+      # argocd-repo-server image (/usr/local/bin/kustomize, git, etc.) are untouched.
       containers:
       - name: argocd-repo-server
         volumeMounts:
-        - name: local-bin
-          mountPath: /usr/local/bin
+        - name: helm-override
+          mountPath: /usr/local/bin/helm
+          subPath: helm
