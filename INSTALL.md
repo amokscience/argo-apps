@@ -41,22 +41,22 @@ kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -
 #
 # Files needed (all in c:\code\argo-apps\argocd\bootstrap\):
 #   - repo-server-helm-patch.yaml    (init container definition - version hardcoded here)
-#   - kustomization.yaml              (applies the patch)
 #
-# Step 1: Set desired version in repo-server-helm-patch.yaml (HELM_VERSION variable)
-# Step 2: Apply the init container patch to repo-server
-kubectl apply -k c:\code\argo-apps\argocd\bootstrap\
+# Step 1: Set desired version by updating the image tag in repo-server-helm-patch.yaml
+#          e.g. image: alpine/helm:3.17.1  →  alpine/helm:3.18.0
+# Step 2: Apply the strategic merge patch directly to the live Deployment
+kubectl patch deployment argocd-repo-server -n argocd --patch-file c:\code\argo-apps\argocd\bootstrap\repo-server-helm-patch.yaml
 #
 # Step 3: Restart repo-server (init container downloads and installs the version)
 kubectl rollout restart deployment/argocd-repo-server -n argocd
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-repo-server -n argocd
 #
-# To check which Helm version is active:
+# To check which Helm version is active (run after Step 3 wait completes):
 kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
 #
 # To change to a different Helm version later:
 # 1. Edit HELM_VERSION in repo-server-helm-patch.yaml
-# 2. kubectl apply -k c:\code\argo-apps\argocd\bootstrap\
+# 2. kubectl patch deployment argocd-repo-server -n argocd --patch-file c:\code\argo-apps\argocd\bootstrap\repo-server-helm-patch.yaml
 # 3. kubectl rollout restart deployment/argocd-repo-server -n argocd
 #
 # For more details, see: c:\code\argo-apps\argocd\bootstrap\HELM_VERSION_README.md

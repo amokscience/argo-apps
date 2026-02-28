@@ -20,37 +20,19 @@ spec:
         args:
           - /bin/cp --update=none /usr/local/bin/argocd /var/run/argocd/argocd && /bin/ln -sf /var/run/argocd/argocd /var/run/argocd/argocd-cmp-server
       - name: install-helm-version
-        image: alpine:3.18
+        # Pin the Helm version in the image tag - no download needed at runtime.
+        # To change versions: update the tag and re-apply the patch.
+        image: alpine/helm:3.17.1
         command:
           - sh
           - -c
           - |
             set -e
-            # Helm version to install. Change this value and re-apply the patch
-            # (kubectl apply -k argocd/bootstrap/) then restart repo-server.
-            HELM_VERSION="3.17.1"
-
-            echo "[INFO] Installing Helm v${HELM_VERSION}"
-            apk add --no-cache curl tar gzip
-
-            cd /tmp
-            HELM_URL="https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
-            echo "[INFO] Downloading: ${HELM_URL}"
-
-            if ! curl -fL "${HELM_URL}" -o helm.tar.gz; then
-              echo "[ERROR] Failed to download Helm v${HELM_VERSION}"
-              exit 1
-            fi
-
-            tar xzf helm.tar.gz
-
-            # Write into the emptyDir volume (mounted at /helm-override)
-            # This file is then subPath-mounted over /usr/local/bin/helm in
-            # argocd-repo-server, replacing only the helm binary.
-            cp linux-amd64/helm /helm-override/helm
+            # Copy the helm binary from this image into the emptyDir volume.
+            # The main container will mount it via subPath over /usr/local/bin/helm.
+            cp /usr/bin/helm /helm-override/helm
             chmod +x /helm-override/helm
-
-            echo "[INFO] Successfully staged Helm v${HELM_VERSION}:"
+            echo "[INFO] Staged Helm version:"
             /helm-override/helm version
         volumeMounts:
         - name: helm-override
