@@ -49,8 +49,9 @@ kubectl patch deployment argocd-repo-server -n argocd --patch-file c:\code\argo-
 #
 # Step 3: Restart repo-server (init container downloads and installs the version)
 kubectl rollout restart deployment/argocd-repo-server -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-repo-server -n argocd
-#
+# Proper wait instead of any pod ready
+kubectl rollout status deployment/argocd-repo-server -n argocd
+
 # To check which Helm version is active (run after Step 3 wait completes):
 kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
 #
