@@ -63,12 +63,15 @@ kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
 # For more details, see: c:\code\argo-apps\argocd\bootstrap\HELM_VERSION_README.md
 # ============================================================================
 
-# 4. Apply ArgoCD configuration and ingress, then restart to apply cm changes
-kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cmd-params-cm.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-cm.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\bootstrap\argocd-ingress.yaml
+# 4. Apply ArgoCD configuration and ingress (one-time manual bootstrap only)
+# ============================================================================
+# After step 5, argocd-config Application takes over GitOps management of
+# these files from argocd/config/. Only apply manually on first install.
+kubectl apply --server-side -f c:\code\argo-apps\argocd\config\argocd-cmd-params-cm.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\config\argocd-cm.yaml
+kubectl apply --server-side -f c:\code\argo-apps\argocd\config\argocd-ingress.yaml
 kubectl rollout restart deployment/argocd-server -n argocd
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
+kubectl rollout status deployment/argocd-server -n argocd
 
 # 4.5 ArgoCD notifications (Slack)
 # ============================================================================
