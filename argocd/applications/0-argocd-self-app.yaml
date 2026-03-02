@@ -14,7 +14,7 @@ spec:
     chart: argo-cd
     # To upgrade ArgoCD: change this version, commit, and ArgoCD will upgrade itself.
     # Find versions at: https://github.com/argoproj/argo-helm/releases
-    targetRevision: 7.7.23
+    targetRevision: 9.4.5
     helm:
       releaseName: argocd
       values: |

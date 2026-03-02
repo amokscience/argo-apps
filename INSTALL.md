@@ -33,11 +33,11 @@ kubectl create secret tls prometheus-tls --cert=c:\certs\_wildcard.amok.pem --ke
 
 # 3. Bootstrap ArgoCD via Helm (pinned version)
 # ============================================================================
-# Version is pinned here AND in argocd/applications/0-argocd-self-app.yaml.
+# Version is pinned here AND in argocd/applications/0-argocd-self-app.yaml. (chart 9.4.5 = ArgoCD v3.3.2)
 # After step 5, ArgoCD manages its own Helm release via that Application —
 # to upgrade ArgoCD later, only change targetRevision in 0-argocd-self-app.yaml.
 helm repo add argo https://argoproj.github.io/argo-helm; helm repo update
-helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 7.7.23 --wait
+helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 9.4.5 --wait
 
 # 3.5 (OPTIONAL) Enable Helm version switching for repo-server
 # ============================================================================
