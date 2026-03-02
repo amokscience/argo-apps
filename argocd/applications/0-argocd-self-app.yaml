@@ -18,6 +18,9 @@ spec:
     helm:
       releaseName: argocd
       values: |
+        global:
+          domain: argocd.amok
+
         configs:
           params:
             # Run server without TLS - terminated at NGINX ingress
@@ -56,17 +59,15 @@ spec:
             enabled: true
             ingressClassName: nginx
             annotations:
-              # F5 NGINX annotations (nginx.org/* only - nginx.ingress.kubernetes.io/* are ignored)
+              # F5 NGINX annotations
               nginx.org/proxy-buffering: "false"
               nginx.org/proxy-read-timeout: "3600s"
               nginx.org/proxy-send-timeout: "3600s"
               nginx.org/proxy-connect-timeout: "120s"
-            hosts:
-            - argocd.amok
-            tls:
-            - secretName: argocd-tls
-              hosts:
+            extraTls:
+            - hosts:
               - argocd.amok
+              secretName: argocd-tls
 
         notifications:
           notifiers:
