@@ -70,6 +70,8 @@ spec:
               secretName: argocd-tls
 
         notifications:
+          secret:
+            create: false  # Secret is pre-created manually with slack-api-url; prevent Helm from overwriting it
           notifiers:
             service.webhook.slack: |
               url: $slack-api-url
