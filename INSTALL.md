@@ -14,9 +14,8 @@ kubectl apply -f c:\code\argo-apps\argocd\bootstrap\namespaces.yaml
 # AWS credentials for External Secrets
 kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AWS_ACCESS_KEY --from-literal=secretAccessKey=$env:AWS_SECRET_KEY -n dev
 kubectl create secret generic argocd-notifications-secret --from-literal=slack-api-url=$env:SLACK_WEBHOOK -n argocd
-# Allow Helm to adopt this secret (argo-cd chart also creates it; without these labels helm install fails)
-kubectl label secret argocd-notifications-secret -n argocd app.kubernetes.io/managed-by=Helm
-kubectl annotate secret argocd-notifications-secret -n argocd meta.helm.sh/release-name=argocd meta.helm.sh/release-namespace=argocd
+# NOTE: Do NOT add Helm labels to this secret. notifications.secret.create=false in 0-argocd-self-app.yaml
+#       tells the argo-cd chart to leave this secret alone (Helm ownership causes it to be wiped).
 
 # ArgoCD OIDC secret
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd
