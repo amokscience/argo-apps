@@ -9,190 +9,21 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    repoURL: https://argoproj.github.io/argo-helm
-    chart: argo-cd
-    # To upgrade ArgoCD: change this version, commit, and ArgoCD will upgrade itself.
-    # Find versions at: https://github.com/argoproj/argo-helm/releases
-    targetRevision: 9.4.5
-    helm:
-      releaseName: argocd
-      values: |
-        global:
-          domain: argocd.amok
-
-        configs:
-          params:
-            # Run server without TLS - terminated at NGINX ingress
-            server.insecure: true
-          cm:
-            timeout.reconciliation: "60s"
-            url: "https://argocd.amok"
-            oidc.tls.insecure.skip.verify: "true"
-            oidc.config: |
-              name: Keycloak
-              issuer: https://keycloak.amok:8443/realms/master
-              clientID: argocd
-              clientSecret: $argocd-oidc-keycloak:client-secret
-              logoutURL: https://keycloak.amok:8443/realms/master/protocol/openid-connect/logout?client_id=argocd&post_logout_redirect_uri=https://argocd.amok
-              requestedScopes: ["openid","profile","email","groups"]
-          rbac:
-            scopes: '[groups, email]'
-            policy.default: ''
-            policy.csv: |
-              g, admin, role:admin
-              p, role:devtest-developer, applications, get, devtest/*, allow
-              p, role:devtest-developer, applications, sync, devtest/*, allow
-              p, role:devtest-developer, applications, override, devtest/*, allow
-              p, role:devtest-developer, applications, update, devtest/*, allow
-              p, role:devtest-developer, applications, delete, devtest/*, allow
-              p, role:devtest-developer, applications, create, devtest/*, allow
-              p, role:devtest-developer, logs, get, devtest/*, allow
-              p, role:devtest-developer, exec, create, devtest/*, allow
-              p, role:devtest-developer, projects, get, devtest, allow
-              p, role:devtest-developer, repositories, get, *, allow
-              p, role:devtest-developer, clusters, get, *, allow
-              g, dev, role:devtest-developer
-
-        server:
-          ingress:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              # F5 NGINX annotations
-              nginx.org/proxy-buffering: "false"
-              nginx.org/proxy-read-timeout: "3600s"
-              nginx.org/proxy-send-timeout: "3600s"
-              nginx.org/proxy-connect-timeout: "120s"
-            extraTls:
-            - hosts:
-              - argocd.amok
-              secretName: argocd-tls
-
-        notifications:
-          secret:
-            create: false  # Secret is pre-created manually with slack-api-url; prevent Helm from overwriting it
-          notifiers:
-            service.webhook.slack: |
-              url: $slack-api-url
-          # Keys must include template./trigger. prefix — chart renders them as-is into argocd-notifications-cm
-          templates:
-            "template.app-sync-succeeded": |
-              webhook:
-                slack:
-                  method: POST
-                  body: |
-                    {
-                      "attachments": [{
-                        "color": "#18be52",
-                        "title": "[SYNCED] {{ .app.metadata.name }} synced successfully",
-                        "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-                        "fields": [
-                          { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-                          { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-                          { "title": "Status", "value": "{{.app.status.sync.status}}", "short": true },
-                          { "title": "Health", "value": "{{.app.status.health.status}}", "short": true }
-                        ]
-                      }]
-                    }
-            "template.app-sync-failed": |
-              webhook:
-                slack:
-                  method: POST
-                  body: |
-                    {
-                      "attachments": [{
-                        "color": "#E96D76",
-                        "title": "[FAILED] {{ .app.metadata.name }} sync failed",
-                        "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-                        "fields": [
-                          { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-                          { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-                          { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true },
-                          { "title": "Phase", "value": "{{.app.status.operationState.phase}}", "short": true },
-                          { "title": "Message", "value": "{{.app.status.operationState.message}}", "short": false }
-                        ]
-                      }]
-                    }
-            "template.app-health-degraded": |
-              webhook:
-                slack:
-                  method: POST
-                  body: |
-                    {
-                      "attachments": [{
-                        "color": "#dc3545",
-                        "title": "[DEGRADED] {{ .app.metadata.name }} health degraded",
-                        "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-                        "fields": [
-                          { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-                          { "title": "Health", "value": "{{.app.status.health.status}}", "short": true },
-                          { "title": "Message", "value": "{{.app.status.health.message}}", "short": false }
-                        ]
-                      }]
-                    }
-            "template.app-health-healthy": |
-              webhook:
-                slack:
-                  method: POST
-                  body: |
-                    {
-                      "attachments": [{
-                        "color": "#18be52",
-                        "title": "[HEALTHY] {{ .app.metadata.name }} is back to healthy",
-                        "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-                        "fields": [
-                          { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-                          { "title": "Health", "value": "{{.app.status.health.status}}", "short": true }
-                        ]
-                      }]
-                    }
-            "template.app-out-of-sync": |
-              webhook:
-                slack:
-                  method: POST
-                  body: |
-                    {
-                      "attachments": [{
-                        "color": "#f4c030",
-                        "title": "[OUT-OF-SYNC] {{ .app.metadata.name }} is out of sync",
-                        "title_link": "{{.context.argocdUrl}}/applications/{{.app.metadata.name}}",
-                        "fields": [
-                          { "title": "Environment", "value": "{{.app.metadata.namespace}}", "short": true },
-                          { "title": "Revision", "value": "{{.app.status.sync.revision}}", "short": true },
-                          { "title": "Sync Status", "value": "{{.app.status.sync.status}}", "short": true }
-                        ]
-                      }]
-                    }
-          triggers:
-            "trigger.on-sync-succeeded": |
-              - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded']
-                send: [app-sync-succeeded]
-            "trigger.on-sync-failed": |
-              - when: app.status.operationState != nil && app.status.operationState.phase in ['Error', 'Failed']
-                send: [app-sync-failed]
-            "trigger.on-sync-succeeded-with-changes": |
-              - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded'] && app.status.operationState.syncResult != nil && app.status.operationState.syncResult.revision != nil
-                oncePer: app.status.operationState.syncResult.revision
-                send: [app-sync-succeeded]
-            "trigger.on-health-degraded": |
-              - when: app.status.health != nil && app.status.health.status == 'Degraded'
-                send: [app-health-degraded]
-            "trigger.on-health-healthy": |
-              - when: app.status.health != nil && app.status.health.status == 'Healthy'
-                oncePer: app.status.operationState.syncResult.revision
-                send: [app-health-healthy]
-            "trigger.on-out-of-sync": |
-              - when: app.status.sync != nil && app.status.sync.status == 'OutOfSync'
-                send: [app-out-of-sync]
-          subscriptions:
-            - recipients:
-                - slack
-              triggers:
-                - on-sync-succeeded-with-changes
-                - on-health-degraded
-                - on-health-healthy
-                - on-out-of-sync
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      # To upgrade ArgoCD: change this version, commit, and ArgoCD will upgrade itself.
+      # Find versions at: https://github.com/argoproj/argo-helm/releases
+      targetRevision: 9.4.5
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/argocd/helm/values-base.yaml
+          - $values/argocd/helm/values-rbac.yaml
+          - $values/argocd/helm/values-notifications.yaml
+    - repoURL: https://github.com/amokscience/argo-apps
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
