@@ -31,57 +31,45 @@ kubectl create secret tls knfo-tls --cert=c:\certs\_wildcard.knfo.pem --key=c:\c
 kubectl create secret tls grafana-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
 kubectl create secret tls prometheus-tls --cert=c:\certs\_wildcard.amok.pem --key=c:\certs\_wildcard.amok-key.pem -n monitoring
 
-# 3. Install ArgoCD bootstrap manifests (stable release)
-kubectl apply --server-side -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
-
-# 3.5 (OPTIONAL) Enable Helm version switching
+# 3. Bootstrap ArgoCD via Helm (pinned version)
 # ============================================================================
-# If you need a specific Helm version instead of the built-in one, follow these steps:
+# Version is pinned here AND in argocd/applications/0-argocd-self-app.yaml.
+# After step 5, ArgoCD manages its own Helm release via that Application —
+# to upgrade ArgoCD later, only change targetRevision in 0-argocd-self-app.yaml.
+helm repo add argo https://argoproj.github.io/argo-helm; helm repo update
+helm install argocd argo/argo-cd --namespace argocd --create-namespace --version 7.7.23 --wait
+
+# 3.5 (OPTIONAL) Enable Helm version switching for repo-server
+# ============================================================================
+# If you need a specific Helm version instead of the built-in one:
 #
 # Files needed (all in c:\code\argo-apps\argocd\bootstrap\):
-#   - repo-server-helm-patch.yaml    (init container definition - version hardcoded here)
+#   - repo-server-helm-patch.yaml    (init container definition - version is the image tag)
 #
 # Step 1: Set desired version by updating the image tag in repo-server-helm-patch.yaml
 #          e.g. image: alpine/helm:3.17.1  →  alpine/helm:3.18.0
 # Step 2: Apply the strategic merge patch directly to the live Deployment
 kubectl patch deployment argocd-repo-server -n argocd --patch-file c:\code\argo-apps\argocd\bootstrap\repo-server-helm-patch.yaml
 #
-# Step 3: Restart repo-server (init container downloads and installs the version)
+# Step 3: Restart repo-server (init container copies helm binary from the image)
 kubectl rollout restart deployment/argocd-repo-server -n argocd
-# Proper wait instead of any pod ready
 kubectl rollout status deployment/argocd-repo-server -n argocd
-
-# To check which Helm version is active (run after Step 3 wait completes):
-kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
 #
-# To change to a different Helm version later:
-# 1. Edit HELM_VERSION in repo-server-helm-patch.yaml
-# 2. kubectl patch deployment argocd-repo-server -n argocd --patch-file c:\code\argo-apps\argocd\bootstrap\repo-server-helm-patch.yaml
-# 3. kubectl rollout restart deployment/argocd-repo-server -n argocd
+# To check which Helm version is active (run after rollout completes):
+kubectl exec -it deployment/argocd-repo-server -n argocd -- helm version
+# To see init container logs:
+kubectl logs deployment/argocd-repo-server -n argocd -c install-helm-version
 #
 # For more details, see: c:\code\argo-apps\argocd\bootstrap\HELM_VERSION_README.md
 # ============================================================================
 
-# 4. Apply ArgoCD configuration and ingress (one-time manual bootstrap only)
+# 4. Deploy root application (scaffolds all applications including ArgoCD self-management)
 # ============================================================================
-# After step 5, argocd-config Application takes over GitOps management of
-# these files from argocd/config/. Only apply manually on first install.
-kubectl apply --server-side -f c:\code\argo-apps\argocd\config\argocd-cmd-params-cm.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\config\argocd-cm.yaml
-kubectl apply --server-side -f c:\code\argo-apps\argocd\config\argocd-ingress.yaml
-kubectl rollout restart deployment/argocd-server -n argocd
-kubectl rollout status deployment/argocd-server -n argocd
-
-# 4.5 ArgoCD notifications (Slack)
-# ============================================================================
-# ConfigMap is now GitOps-managed from:
-#   c:\code\argo-apps\argocd\applications\3-argocd-notifications-cm.yaml
-# Ensure secret exists before root app deploy:
-#   argocd-notifications-secret (key: slack-api-url)
-
-# 5. Deploy root application (scaffolds user applications and projects)
-# NOTE: project-devtest is now GitOps-managed via argocd/applications/0-project-devtest.yaml (sync-wave 0)
+# NOTE: 0-argocd-self-app.yaml (wave 0) will have ArgoCD adopt its own Helm release.
+#       All ArgoCD config (OIDC, ingress, params) is in that file's values block.
+#       Future ArgoCD upgrades: change targetRevision in 0-argocd-self-app.yaml and push.
+# NOTE: ArgoCD notifications ConfigMap is GitOps-managed via 3-argocd-notifications-cm.yaml.
+#       Ensure argocd-notifications-secret exists (key: slack-api-url) before deploying.
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/root -n argocd --timeout=300s
 
