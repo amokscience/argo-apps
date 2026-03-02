@@ -67,7 +67,7 @@ rbac:
     verbs: ["get", "list", "watch"]
   - apiGroups: ["argoproj.io"]
     resources: ["applications", "appprojects", "applicationsets"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "patch"]
   - apiGroups: ["external-secrets.io"]
     resources: ["externalsecrets", "secretstores", "clustersecretstores", "clusterexternalsecrets"]
     verbs: ["get", "list", "watch"]
