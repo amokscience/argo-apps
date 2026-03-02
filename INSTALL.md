@@ -14,6 +14,9 @@ kubectl apply -f c:\code\argo-apps\argocd\bootstrap\namespaces.yaml
 # AWS credentials for External Secrets
 kubectl create secret generic aws-credentials --from-literal=accessKeyID=$env:AWS_ACCESS_KEY --from-literal=secretAccessKey=$env:AWS_SECRET_KEY -n dev
 kubectl create secret generic argocd-notifications-secret --from-literal=slack-api-url=$env:SLACK_WEBHOOK -n argocd
+# Allow Helm to adopt this secret (argo-cd chart also creates it; without these labels helm install fails)
+kubectl label secret argocd-notifications-secret -n argocd app.kubernetes.io/managed-by=Helm
+kubectl annotate secret argocd-notifications-secret -n argocd meta.helm.sh/release-name=argocd meta.helm.sh/release-namespace=argocd
 
 # ArgoCD OIDC secret
 kubectl create secret generic argocd-oidc-keycloak --from-literal=client-secret=$env:KEYCLOAK_KEY -n argocd
@@ -100,13 +103,11 @@ argocd login argocd.amok --username admin --password $ArgoPassword --insecure --
 # ============================================================================
 # RBAC MANAGEMENT (GitOps)
 # ============================================================================
-# After initial bootstrap, RBAC policies are managed through GitOps.
-# The argocd-rbac Application automatically syncs changes from:
-#   argocd/rbac/argocd-rbac-cm.yaml
+# RBAC policies are managed via Helm values in argocd/applications/0-argocd-self-app.yaml
+# under configs.rbac.policy.csv — the argo-cd Helm chart owns argocd-rbac-cm.
 #
 # To update RBAC policies:
-# 1. Edit argocd/rbac/argocd-rbac-cm.yaml in git
+# 1. Edit the policy.csv block in 0-argocd-self-app.yaml
 # 2. Commit and push changes
-# 3. ArgoCD will auto-sync the ConfigMap
-# 4. Restart ArgoCD server: kubectl rollout restart deployment/argocd-server -n argocd
+# 3. ArgoCD will auto-sync (helm upgrade) and apply the new RBAC
 
