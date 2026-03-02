@@ -96,8 +96,6 @@ Send-EventBridgeNotification "deploy done"
 $ArgoPassword = kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 argocd login argocd.amok --username admin --password $ArgoPassword --insecure --grpc-web
 
-p
-
 # ============================================================================
 # RBAC MANAGEMENT (GitOps)
 # ============================================================================
