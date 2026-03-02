@@ -69,10 +69,8 @@ kubectl logs deployment/argocd-repo-server -n argocd -c install-helm-version
 # 4. Deploy root application (scaffolds all applications including ArgoCD self-management)
 # ============================================================================
 # NOTE: 0-argocd-self-app.yaml (wave 0) will have ArgoCD adopt its own Helm release.
-#       All ArgoCD config (OIDC, ingress, params) is in that file's values block.
+#       All ArgoCD config (OIDC, ingress, params, RBAC, notifications) is in that file's values block.
 #       Future ArgoCD upgrades: change targetRevision in 0-argocd-self-app.yaml and push.
-# NOTE: ArgoCD notifications ConfigMap is GitOps-managed via 3-argocd-notifications-cm.yaml.
-#       Ensure argocd-notifications-secret exists (key: slack-api-url) before deploying.
 kubectl apply --server-side -f c:\code\argo-apps\argocd\root-app.yaml
 kubectl wait --for=jsonpath='{.status.sync.status}'=Synced application/root -n argocd --timeout=300s
 
