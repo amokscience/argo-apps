@@ -75,8 +75,9 @@ spec:
           notifiers:
             service.webhook.slack: |
               url: $slack-api-url
+          # Keys must include template./trigger. prefix — chart renders them as-is into argocd-notifications-cm
           templates:
-            app-sync-succeeded: |
+            "template.app-sync-succeeded": |
               webhook:
                 slack:
                   method: POST
@@ -94,7 +95,7 @@ spec:
                         ]
                       }]
                     }
-            app-sync-failed: |
+            "template.app-sync-failed": |
               webhook:
                 slack:
                   method: POST
@@ -113,7 +114,7 @@ spec:
                         ]
                       }]
                     }
-            app-health-degraded: |
+            "template.app-health-degraded": |
               webhook:
                 slack:
                   method: POST
@@ -130,7 +131,7 @@ spec:
                         ]
                       }]
                     }
-            app-health-healthy: |
+            "template.app-health-healthy": |
               webhook:
                 slack:
                   method: POST
@@ -146,7 +147,7 @@ spec:
                         ]
                       }]
                     }
-            app-out-of-sync: |
+            "template.app-out-of-sync": |
               webhook:
                 slack:
                   method: POST
@@ -164,31 +165,26 @@ spec:
                       }]
                     }
           triggers:
-            on-sync-succeeded: |
+            "trigger.on-sync-succeeded": |
               - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded']
                 send: [app-sync-succeeded]
-            on-sync-failed: |
+            "trigger.on-sync-failed": |
               - when: app.status.operationState != nil && app.status.operationState.phase in ['Error', 'Failed']
                 send: [app-sync-failed]
-            on-sync-succeeded-with-changes: |
+            "trigger.on-sync-succeeded-with-changes": |
               - when: app.status.operationState != nil && app.status.operationState.phase in ['Succeeded'] && app.status.operationState.syncResult != nil && app.status.operationState.syncResult.revision != nil
                 oncePer: app.status.operationState.syncResult.revision
                 send: [app-sync-succeeded]
-            on-health-degraded: |
+            "trigger.on-health-degraded": |
               - when: app.status.health != nil && app.status.health.status == 'Degraded'
                 send: [app-health-degraded]
-            on-health-healthy: |
+            "trigger.on-health-healthy": |
               - when: app.status.health != nil && app.status.health.status == 'Healthy'
                 oncePer: app.status.operationState.syncResult.revision
                 send: [app-health-healthy]
-            on-out-of-sync: |
+            "trigger.on-out-of-sync": |
               - when: app.status.sync != nil && app.status.sync.status == 'OutOfSync'
                 send: [app-out-of-sync]
-          defaultTriggers:
-            - on-sync-succeeded-with-changes
-            - on-health-degraded
-            - on-health-healthy
-            - on-out-of-sync
           subscriptions:
             - recipients:
                 - slack
@@ -197,8 +193,6 @@ spec:
                 - on-health-degraded
                 - on-health-healthy
                 - on-out-of-sync
-          context:
-            argocdUrl: https://argocd.amok
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
